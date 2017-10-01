@@ -20,7 +20,7 @@
 
 #define DEFAULT_PORT    12345
 #define BUF_SIZE        500
-
+#define QUE_LENGTH	10
 
 const char *WELCOME_MESSAGE = "\n"
                               "=============================================\n"
