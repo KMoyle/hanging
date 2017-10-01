@@ -6,8 +6,6 @@
 
 #include "server.h"
 
-#define BUF_SIZE 500
-
 int main(int argc, char *argv[])
 {
 	int sfd, nfd, s;
@@ -25,7 +23,7 @@ int main(int argc, char *argv[])
 
 	memset(&hints, 0, sizeof(struct addrinfo));
         hints.ai_family = AF_UNSPEC;    /* Allow IPv4 or IPv6 */
-        hints.ai_socktype = SOCK_DGRAM; /* Datagram socket */
+        hints.ai_socktype = SOCK_STREAM; /* Datagram socket */
         hints.ai_flags = AI_PASSIVE;    /* For wildcard IP address */
         hints.ai_protocol = 0;          /* Any protocol */
         hints.ai_canonname = NULL;
@@ -59,7 +57,7 @@ int main(int argc, char *argv[])
 
 	//start listnening
 
-	if (listen(sfd, 10) == -1) {
+	if (listen(sfd, QUE_LENGTH) == -1) {
 		perror("listen");
 		exit(1);
 	}
