@@ -1,7 +1,14 @@
-all:
-	gcc -std=c99 -D_POSIX_SOURCE src/server.c -I./headers -o bin/server
-	gcc -std=c99 -D_POSIX_SOURCE src/client.c -I./headers -o bin/client
+CC = c99 
+CFLAGS = -Wall # Show all reasonable warnings
+LDFLAGS = 
+
+all: server
+
+server: server.o
+
+server.o: server.c
 
 clean:
-	rm bin/server
-	rm bin/client
+	rm -f server *.o 
+ 
+.PHONY: clean
