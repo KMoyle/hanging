@@ -16,7 +16,7 @@
 #include <sys/wait.h> 
 #include <unistd.h>
 #include <errno.h>
-#include <netdb.h>      
+#include <netdb.h>     
 
 #define DEFAULT_PORT    12345
 #define BUF_SIZE        500

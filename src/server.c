@@ -8,7 +8,7 @@
 
 #define BUF_SIZE 500
 
-int main(int argc, char *argc[])
+int main(int argc, char *argv[])
 {
 	int sfd, nfd, s;
 	struct addrinfo hints;
@@ -77,12 +77,12 @@ int main(int argc, char *argc[])
 
 		}
 		 //Receives a message from the new socket
-        	if (recv(nfd, buf, BUF_SIZE, 0) == -1) {
+        	if (recv(nfd, buf_rec, BUF_SIZE, 0) == -1) {
             		perror("receiving");
             		exit(EXIT_FAILURE);
         	}
 		
-		printf("%s\n", buf);
+		printf("%s\n", buf_rec);
 		
 		close(nfd); 
 
