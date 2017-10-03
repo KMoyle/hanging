@@ -58,10 +58,12 @@ int main(int argc, char *argv[])
         freeaddrinfo(result);// No longer needed
 
 	//start listnening
+
 	if (listen(sfd, 10) == -1) {
 		perror("listen");
 		exit(1);
 	}
+
 
 	printf("server starts listnening ...\n");
 
