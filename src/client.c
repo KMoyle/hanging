@@ -2,11 +2,10 @@
 
 int main(int argc, char *argv[]){
 	
-    int         error_indentifier; // Returns the error code from getaddrinfo()
-    int         socket_identifier;
-    addrinfo    hints; // Sets the criteria for getaddrinfo()
-    addrinfo    *result; // List of memory addresses returned from getaddrinfo()
-    addrinfo    *rp; // Pointer to a single result in list
+    int error_indentifier; // Returns the error code from getaddrinfo()
+    int socket_identifier;
+    struct addrinfo hints;
+    struct addrinfo *result, *rp;
 
     // Print an error if the user has not provided the correct number of arguments
     if (argc != 3) {
@@ -29,16 +28,16 @@ int main(int argc, char *argv[]){
     for (rp = result; rp != NULL; rp = rp->ai_next) {
 
         // Attempt to create socket
-        if ((socket_descriptor = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol)) == -1) {
+        if ((socket_identifier = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol)) == -1) {
             continue; // Socket creation failed
         }
 
         // Establish connection using opened socket
-        if (connect(socket_descriptor, rp->ai_addr, rp->ai_addrlen) == 0) {
+        if (connect(socket_identifier, rp->ai_addr, rp->ai_addrlen) == 0) {
             break; // Connection established
         }
 
-        close(socket_descriptor); // Connection failed
+        close(socket_identifier); // Connection failed
     }
 
     if (rp == NULL) { // No connections
@@ -50,6 +49,11 @@ int main(int argc, char *argv[]){
         // send & receive data using send & recv OR write & read
 
     // Close connection using close() system call
+	while(!quit){
+		printf("Connection Successful\n");
+
+	}
+
 
     return EXIT_SUCCESS;
 }
