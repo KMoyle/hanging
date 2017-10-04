@@ -25,4 +25,5 @@ struct addrinfo *result, *rp;
 
 void check_inputs(int argc);
 int establish_connection(char *host, char *portNum);
+void close_client();
 
