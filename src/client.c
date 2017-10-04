@@ -49,8 +49,10 @@ int main(int argc, char *argv[]){
         // send & receive data using send & recv OR write & read
 
     // Close connection using close() system call
+
+
 	while(!quit){
-		printf("Connection Successful\n");
+		write(socket_identifier, "Connected\n", 15);
 
 	}
 
