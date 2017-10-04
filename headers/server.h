@@ -1,12 +1,13 @@
-/*
-  	   CAB403 Assignment
+
+//  	      CAB403 Assignment
  
-      By Michael Bell & Kyle Moyle
-*/
+//      By Michael Bell & Kyle Moyle
+
 
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
+#include <stdbool.h>
 #include <stdio.h> 
 #include <stdlib.h> 
 #include <string.h> 
@@ -18,9 +19,10 @@
 #include <errno.h>
 #include <netdb.h>     
 
-#define DEFAULT_PORT    12345
+#define DEFAULT_PORT    "12345"
 #define BUF_SIZE        500
 #define QUE_LENGTH	10
+#define PORT_LENGTH	5
 
 const char *WELCOME_MESSAGE = "\n"
                               "=============================================\n"
@@ -35,6 +37,8 @@ const char *WELCOME_MESSAGE = "\n"
 const char *LOGIN = "You are required to logon with your username and password\n";
 const char *USERNAME = "\nPlease enter your username-->";
 const char *PASSWORD = "\nPlease enter your password-->";
+const char *MAIN_MENU = "\n"
+			"=======MAIN MENU=======";
 
 
 
