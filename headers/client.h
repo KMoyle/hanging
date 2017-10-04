@@ -18,3 +18,11 @@
 #include <string.h>
 
 static bool quit = false;
+int error_indentifier; // Returns the error code from getaddrinfo()
+int socket_identifier;
+struct addrinfo hints;
+struct addrinfo *result, *rp;
+
+void check_inputs(int argc);
+int establish_connection(char *host, char *portNum);
+

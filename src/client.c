@@ -1,17 +1,34 @@
 #include "client.h"
 
 int main(int argc, char *argv[]){
-	
-    int error_indentifier; // Returns the error code from getaddrinfo()
-    int socket_identifier;
-    struct addrinfo hints;
-    struct addrinfo *result, *rp;
 
+    check_inputs(argc);
+
+    establish_connection(argv[1], argv[2]);
+
+    write(socket_identifier, "Client Connected\n", 30);
+
+	while(1){ // Change to something better
+
+
+	}
+
+
+    write(socket_identifier, "Client Connected\n", 30);
+    return EXIT_SUCCESS;
+}
+
+
+void check_inputs(int argc){
     // Print an error if the user has not provided the correct number of arguments
     if (argc != 3) {
         printf("Usage: ./client <hostname> <port>\n");
         exit(EXIT_FAILURE);
     }
+}
+
+
+int establish_connection(char *host, char *portNum){
 
     // Comparable values for getaddrinfo()
     hints.ai_family = AF_INET;
@@ -20,7 +37,7 @@ int main(int argc, char *argv[]){
     hints.ai_flags = 0;
 
     // Test address information from the server
-    if ((error_indentifier = getaddrinfo(argv[1], argv[2], &hints, &result)) != 0) {
+    if ((error_indentifier = getaddrinfo(host, portNum, &hints, &result)) != 0) {
         printf("Address info could not be found: %s\n", gai_strerror(error_indentifier));
     }
 
@@ -45,17 +62,10 @@ int main(int argc, char *argv[]){
         exit(EXIT_FAILURE);
     }
 
-    // While connection remains open
-        // send & receive data using send & recv OR write & read
 
-    // Close connection using close() system call
-
-
-	while(!quit){
-		write(socket_identifier, "Connected\n", 15);
-
-	}
-
-
-    return EXIT_SUCCESS;
 }
+
+
+
+
+
