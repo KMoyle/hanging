@@ -48,11 +48,11 @@ int read_socket( int sfd, char *buf_rec ){
 	return 0;
 }
 
-void write_socket( int sfd, char *buf_snd )
+void write_socket( int sfd, const char *buf_snd )
 {
+
     if (write(sfd, buf_snd, BUF_SIZE) == -1) {
         perror("writing output");
-        exit(EXIT_FAILURE);
     }
 }
 
@@ -66,34 +66,73 @@ void insert_new_client(client_t* client){
 
    	//clients.tail = new_client;
 }
-/*
-void authentication(char *clientName, char *clientPassword){
+
+bool authenticate_client(char *clientName, char *clientPassword){
 	
 	
-	FILE *fp = fopen("Authentication.txt", "r");
-        char buf[BUF_SIZE];
+	FILE *file;
+	char auth_file_username[6];
+	char auth_file_password[6];
 
-	fgets(fp, buf, BUF_SIZE);
+	if ((file = fopen("bin/Authentication.txt", "r")) == NULL) {
+		perror("fopen");
+		return false;
+	}
 
-	while(fgets(fp, buf, BUF_SIZE)) {
-        
-        	//get client name and password
-        	if (sscanf(buf, "%s %s", &new_client->clientName, &new_client->clientPassword) != 2)
-            		fputs(stderr, "sscanf format error\n");
-        
-        insert_user(&new_user);
-    }
+	while (fgetc(file) != '\n'); 
 
-    fclose(fp);
+	while (fscanf(file, "%s %s\n", auth_file_username, auth_file_password) > 0) {
 
-}*/
+		if (strcmp(auth_file_username, clientName) == 0 && strcmp(auth_file_password, clientPassword) == 0) {
+			return true;
+		}
+	}
 
-void client_(){
-	//TODO
+	return false; 
+
+
 }
 
-void input_client_info( client_t* client ){
-	//TODO
+int get_client_name(client_t* client){
+	
+	write_socket(client->sfd, USERNAME);
+
+	if(read_socket(client->sfd, client->clientName) == -1){
+		perror("cant read socket");
+		return -1;
+	}
+	
+	return 0;
+}
+int get_client_password(client_t* client){
+	
+	write_socket(client->sfd, PASSWORD);
+
+	if(read_socket(client->sfd,client->clientPassword) == -1){
+		perror("cant read socket");
+		return -1;
+	}
+	
+	return 0;
+}
+
+bool client_( ){
+
+	client_t *client;
+
+	get_client_name(client);
+	get_client_password(client);
+	
+	if(!authenticate_client(client->clientName, client->clientPassword)){
+		
+		printf("AUTH FAILED");
+		write_socket(client->sfd, UNAUTH);
+		
+		return false;
+	}
+
+	return true;	 
+	
 }
 
 int passive_connection(addrinfo *rp, char *port){
@@ -166,9 +205,7 @@ int main(int argc, char *argv[])
 
 	printf("server is now listnening ...\n\n");
 
-	/* repeat: accept, send, close the connection */
-	/* for every accepted connection, use a sepetate process or thread to serve it */
-	
+
 	for(;;){  /* main accept() loop */
 		
 		//accepts a new connection
@@ -183,14 +220,17 @@ int main(int argc, char *argv[])
 		printf("Sending Welcome Message\n\n");
 		
 		//sending welcome msg to client
-		write(nfd, WELCOME_LOGIN_MSG, BUF_SIZE);	
-
-
+		write_socket(pfd, WELCOME_LOGIN_MSG);	
 		
-		while(clientConnection){
-
-			//sending menu data
-		}
+		
+		/*while(clientConnection){
+		
+			if(client_()){
+				
+				//play hangman
+			}
+			
+		}*/
 		 //Receives a message from the new socket
         	if (recv(nfd, buf_rec, BUF_SIZE, 0) == -1) {
             		perror("receiving");
@@ -198,6 +238,7 @@ int main(int argc, char *argv[])
         	}
 		
 		printf("%s\n", buf_rec);
+		
 		
 		close(nfd); 
 
