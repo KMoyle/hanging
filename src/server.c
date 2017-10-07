@@ -6,20 +6,20 @@
 
 #include "server.h"
 
-int sfd, nfd, s;
-struct addrinfo hints;
-struct addrinfo *result, *rp;
 char buf_rec[BUF_SIZE];
 char buf_snd[BUF_SIZE];
+char buf[BUF_SIZE];
+
 char *port;
 char clientPassword[6];
 char clientName[6];
 bool clientConnection = false;
 
-typedef struct client client_t;
-typedef struct client_node client_node_t;
+int pfd; //passive socket
+int sfd;
 
-struct client {
+struct client_details {
+	int sfd;
 	char clientName[6];
 	char clientPassword[6];
 };
@@ -36,30 +36,73 @@ struct client_list{
 	
 }clients;
 
-void client_login(){
-	//TODO
+
+
+int read_socket( int sfd, char *buf_rec ){
+	
+	//Receives a message from sfd
+        if (recv(sfd, buf_rec, BUF_SIZE, 0) == -1) {
+            	perror("receiving input");
+            	exit(EXIT_FAILURE);
+        	}
+	return 0;
 }
 
-void input_client_info( struct client* client){
-	//TODO
-}
-	
-int main(int argc, char *argv[])
+void write_socket( int sfd, char *buf_snd )
 {
+    if (write(sfd, buf_snd, BUF_SIZE) == -1) {
+        perror("writing output");
+        exit(EXIT_FAILURE);
+    }
+}
 
+void insert_new_client(client_t* client){
 
-
+	struct client_node_t* new_client = malloc(sizeof(client_node_t));
 	
+	//new_client->next = NULL;
 
-	// Get port number for server to listen on, if not correct defalut is assigned
-	if (argc == 2) {
-		port = argv[1];
-	}else{
-		port = DEFAULT_PORT;
-		printf("Incorrect port argument, assigned default %s\n\n",DEFAULT_PORT);
-	}
+    	//memcpy(&new_client->client, client, sizeof(client_t));
 
-	memset(&hints, 0, sizeof(struct addrinfo));
+   	//clients.tail = new_client;
+}
+/*
+void authentication(char *clientName, char *clientPassword){
+	
+	
+	FILE *fp = fopen("Authentication.txt", "r");
+        char buf[BUF_SIZE];
+
+	fgets(fp, buf, BUF_SIZE);
+
+	while(fgets(fp, buf, BUF_SIZE)) {
+        
+        	//get client name and password
+        	if (sscanf(buf, "%s %s", &new_client->clientName, &new_client->clientPassword) != 2)
+            		fputs(stderr, "sscanf format error\n");
+        
+        insert_user(&new_user);
+    }
+
+    fclose(fp);
+
+}*/
+
+void client_(){
+	//TODO
+}
+
+void input_client_info( client_t* client ){
+	//TODO
+}
+
+int passive_connection(addrinfo *rp, char *port){
+	
+	int s;
+	addrinfo hints, *result, *addr;
+
+
+	memset(&hints, 0, sizeof(addrinfo));
         hints.ai_family = AF_UNSPEC;    /* Allow IPv4 or IPv6 */
         hints.ai_socktype = SOCK_STREAM; /* Datagram socket */
         hints.ai_flags = AI_PASSIVE;    /* For wildcard IP address */
@@ -74,32 +117,52 @@ int main(int argc, char *argv[])
                 exit(EXIT_FAILURE);
         }
 
-	for (rp = result; rp != NULL; rp = rp->ai_next) {
+	for (addr = result; addr != NULL; addr = addr->ai_next) {
         	
-		sfd = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
+		sfd = socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol);
                 if (sfd == -1){
                    continue;
 		}
-                if (bind(sfd, rp->ai_addr, rp->ai_addrlen) == 0){
+                if (bind(sfd, addr->ai_addr, addr->ai_addrlen) == 0){
                    break;             
 		}
                close(sfd);
          }
 	 
-	if (rp == NULL) {//No address succeeded
+	if (addr == NULL) {//No address succeeded
                fprintf(stderr, "Could not bind\n");
                exit(EXIT_FAILURE);
         }
 
-        freeaddrinfo(result);// No longer needed
-
 	//start listnening
-
 	if (listen(sfd, QUE_LENGTH) == -1) {
 		perror("listen");
 		exit(1);
 	}
 
+        freeaddrinfo(result);// No longer needed
+
+	*rp = *addr;
+
+	return sfd;
+}
+
+
+	
+int main(int argc, char *argv[])
+{
+	int sfd, nfd;
+	addrinfo rp;
+
+	// Get port number for server to listen on, if not correct defalut is assigned
+	if (argc == 2) {
+		port = argv[1];
+	}else{
+		port = DEFAULT_PORT;
+		printf("Incorrect port argument, assigned default %s\n\n",DEFAULT_PORT);
+	}
+
+	pfd = passive_connection(&rp, port);
 
 	printf("server is now listnening ...\n\n");
 
@@ -109,7 +172,7 @@ int main(int argc, char *argv[])
 	for(;;){  /* main accept() loop */
 		
 		//accepts a new connection
-		if ((nfd = accept(sfd, rp->ai_addr, &rp->ai_addrlen)) == -1) {
+		if ((nfd = accept(pfd, rp.ai_addr, &rp.ai_addrlen)) == -1) {
 			perror("accept");
 			continue;
 
@@ -120,15 +183,9 @@ int main(int argc, char *argv[])
 		printf("Sending Welcome Message\n\n");
 		
 		//sending welcome msg to client
-		write(nfd, WELCOME_MESSAGE, BUF_SIZE);	
+		write(nfd, WELCOME_LOGIN_MSG, BUF_SIZE);	
 
-		strcpy(clientPassword, "123456");
-		strcpy(clientName, "Tom");
 
-		/*if(clientPassword != "123456" && clientName != "Tom"){
-			perror("Incorrect Login Details");
-			exit(EXIT_FAILURE);
-		}*/
 		
 		while(clientConnection){
 
