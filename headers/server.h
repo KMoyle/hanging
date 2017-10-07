@@ -24,7 +24,11 @@
 #define QUE_LENGTH	10
 #define PORT_LENGTH	5
 
-const char *WELCOME_MESSAGE = "\n"
+typedef struct addrinfo addrinfo;
+typedef struct client_details client_t;
+typedef struct node client_node_t;
+
+const char *WELCOME_LOGIN_MSG = "\n"
                               "=============================================\n"
                               "\n"
 			      "\n"
@@ -32,14 +36,16 @@ const char *WELCOME_MESSAGE = "\n"
                               "\n"
 			      "\n"
                               "=============================================\n"
-                              "\n";
-
-const char *LOGIN = "You are required to logon with your username and password\n";
+                              "\n"
+			      "You are required to logon with your register Username and Password\n";
 const char *USERNAME = "\nPlease enter your username-->";
 const char *PASSWORD = "\nPlease enter your password-->";
 const char *MAIN_MENU = "\n"
 			"=======MAIN MENU=======";
 
-
-
-
+int passive_connection( addrinfo *rp, char *port);
+int read_socket( int sfd, char *buf_rec );
+void write_socket( int sfd, char *buf_snd );
+void insert_new_client( client_t* client);
+void client_();
+void input_client_info( client_t* client );
