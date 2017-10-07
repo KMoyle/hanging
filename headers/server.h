@@ -40,12 +40,18 @@ const char *WELCOME_LOGIN_MSG = "\n"
 			      "You are required to logon with your register Username and Password\n";
 const char *USERNAME = "\nPlease enter your username-->";
 const char *PASSWORD = "\nPlease enter your password-->";
+const char *UNAUTH = "\n"
+		      "Unaurtherised to play"
+		      "\n";
 const char *MAIN_MENU = "\n"
 			"=======MAIN MENU=======";
 
 int passive_connection( addrinfo *rp, char *port);
 int read_socket( int sfd, char *buf_rec );
-void write_socket( int sfd, char *buf_snd );
+void write_socket( int sfd, const char *buf_snd );
 void insert_new_client( client_t* client);
-void client_();
+int get_client_name(client_t* client);
+int get_client_password(client_t* client);
 void input_client_info( client_t* client );
+bool authenticate_client(char *clientName, char *clientPassword);
+bool client_( );
