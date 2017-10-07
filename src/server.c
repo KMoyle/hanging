@@ -6,17 +6,49 @@
 
 #include "server.h"
 
+int sfd, nfd, s;
+struct addrinfo hints;
+struct addrinfo *result, *rp;
+char buf_rec[BUF_SIZE];
+char buf_snd[BUF_SIZE];
+char *port;
+char clientPassword[6];
+char clientName[6];
+bool clientConnection = false;
+
+typedef struct client client_t;
+typedef struct client_node client_node_t;
+
+struct client {
+	char clientName[6];
+	char clientPassword[6];
+};
+	
+struct node {
+	struct client_t *client;
+	struct client_node_t *next;
+	
+};
+
+struct client_list{
+	struct node *head;
+	struct node *tail;
+	
+}clients;
+
+void client_login(){
+	//TODO
+}
+
+void input_client_info( struct client* client){
+	//TODO
+}
+	
 int main(int argc, char *argv[])
 {
-	int sfd, nfd, s;
-	struct addrinfo hints;
-        struct addrinfo *result, *rp;
-        char buf_rec[BUF_SIZE];
-	char buf_snd[BUF_SIZE];
-	char *port;
-	char clientPassword[6];
-	char clientName[6];
-	bool clientConnection = false;
+
+
+
 	
 
 	// Get port number for server to listen on, if not correct defalut is assigned
