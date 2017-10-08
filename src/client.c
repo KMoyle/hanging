@@ -1,11 +1,7 @@
 #include "client.h"
 
 int main(int argc, char *argv[]){
-
-	check_inputs(argc);
-
-	signal(SIGINT, shutdown_client);
-
+	
 	check_inputs(argc);
 
 	socket_identifier = establish_connection(argv[1], argv[2]);
@@ -134,10 +130,9 @@ static void *recieve_data(void *data)
     char    recieved_buffer[BUFFER_LENGTH];
 
     socket_identifier = (int *) data;
-
     for (;;) {
         if (read(*socket_identifier, recieved_buffer, BUFFER_LENGTH) == -1) {
-            perror("read");
+	    perror("read");
             exit(EXIT_FAILURE);
         }
 
@@ -151,16 +146,5 @@ static void *recieve_data(void *data)
         fflush(stdout);
     }
 }
-
-
-
-
-
-void shutdown_client(){
-	exit(EXIT_SUCCESS);
-}
-
-
-
 
 
