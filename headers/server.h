@@ -39,6 +39,11 @@ struct node {
 	struct client_node_t *next;	
 };
 
+struct client_list {
+	struct client_node_t *head;
+	struct client_node_t *tail;
+}clients;
+
 
 const char *WELCOME_LOGIN_MSG = "\n"
                               "=============================================\n"
@@ -56,14 +61,23 @@ const char *UNAUTH = "\n"
 		      "Unaurtherised to play"
 		      "\n";
 const char *MAIN_MENU = "\n"
-			"=======MAIN MENU=======";
-
+			"=======MAIN MENU=======\n"
+			"\n"
+			"\n"
+			"Please enter a selection"
+			"<1> Play Hangman\n"
+			"<1> Play Hangman\n"
+			"<1> Play Hangman\n"
+			"\n"
+			"\n"
+			"Selection option 1-3 ->";
 int passive_connection( addrinfo *rp, char *port);
 int read_socket( int sfd, char *buf_rec );
 void write_socket( int sfd, const char *buf_snd );
-void insert_new_client( client_t* client, client_node_t* next );
+void insert_new_client( client_t* client );
 int get_client_name( client_t* client );
 int get_client_password( client_t* client );
+int get_menu_selection( int sfd );
 void input_client_info( client_t* client );
 bool authenticate_client( char *clientName, char *clientPassword );
 bool client_( int sfd );
