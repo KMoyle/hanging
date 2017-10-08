@@ -28,6 +28,18 @@ typedef struct addrinfo addrinfo;
 typedef struct client_details client_t;
 typedef struct node client_node_t;
 
+struct client_details {
+	int sfd;
+	char clientName[6];
+	char clientPassword[6];
+};
+	
+struct node {
+	struct client_t *client;
+	struct client_node_t *next;	
+};
+
+
 const char *WELCOME_LOGIN_MSG = "\n"
                               "=============================================\n"
                               "\n"
@@ -49,7 +61,7 @@ const char *MAIN_MENU = "\n"
 int passive_connection( addrinfo *rp, char *port);
 int read_socket( int sfd, char *buf_rec );
 void write_socket( int sfd, const char *buf_snd );
-void insert_new_client( client_t* client );
+void insert_new_client( client_t* client, client_node_t* next );
 int get_client_name( client_t* client );
 int get_client_password( client_t* client );
 void input_client_info( client_t* client );
