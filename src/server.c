@@ -18,26 +18,6 @@ bool clientConnection = false;
 int pfd; //passive socket
 int sfd;
 
-struct client_details {
-	int sfd;
-	char clientName[6];
-	char clientPassword[6];
-};
-	
-struct node {
-	struct client_t *client;
-	struct client_node_t *next;
-	
-};
-
-struct client_list{
-	struct node *head;
-	struct node *tail;
-	
-}clients;
-
-
-
 int read_socket( int sfd, char *buf_rec ){
 	
 	//Receives a message from sfd
@@ -57,15 +37,23 @@ void write_socket( int sfd, const char *buf_snd )
     }
 }
 
-void insert_new_client(client_t* client){
+void insert_new_client(client_t* client, client_node_t* head ){
 
-	struct client_node_t* new_client = malloc(sizeof(client_node_t));
+	client_node_t *new_client = (client_node_t*) malloc(sizeof(client_node_t));
 	
-	//new_client->next = NULL;
+	//if(new_client == NULL){
+		//return NULL;
+	//}
+	
+	memcpy(&new_client->client, client, sizeof(client_t));
 
-    	//memcpy(&new_client->client, client, sizeof(client_t));
+	new_client->client = client;
+	new_client->next = head;
+	
+	for( ; head!=NULL ; head = head->next){
+		printf("clientname=%s, clientpassword=%s",client->clientName,client->clientPassword);
+	}
 
-   	//clients.tail = new_client;
 }
 
 bool authenticate_client(char *clientName, char *clientPassword){
@@ -121,6 +109,7 @@ int get_client_password(client_t* client){
 
 bool client_( int sfd ){
 	client_t *client;
+	client_node_t *client_list;
 
 	memset(buf_rec, 0, sizeof(buf_rec));
 	memset(buf_snd, 0, sizeof(buf_snd));
@@ -142,6 +131,7 @@ bool client_( int sfd ){
 		
 		return false;
 	}
+		insert_new_client(client->clientName, client_list);
 
 	return true;	 
 	
@@ -234,7 +224,7 @@ int main(int argc, char *argv[])
 		do{
 
 			if(client_(nfd)){
-				//play hangman
+				
 			}else{
 				clientConnection = false;
 			}
