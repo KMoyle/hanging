@@ -33,5 +33,5 @@ int obtain_input(char *msg, char *input_str);
 
 void check_inputs(int argc);
 int establish_connection(char *host, char *portNum);
-void shutdown_client();
+void terminate_client();
 
