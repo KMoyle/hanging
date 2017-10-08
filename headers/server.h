@@ -20,7 +20,7 @@
 #include <netdb.h>     
 
 #define DEFAULT_PORT    "12345"
-#define BUF_SIZE        500
+#define BUF_SIZE        256
 #define QUE_LENGTH	10
 #define PORT_LENGTH	5
 
@@ -54,4 +54,4 @@ int get_client_name( client_t* client );
 int get_client_password( client_t* client );
 void input_client_info( client_t* client );
 bool authenticate_client( char *clientName, char *clientPassword );
-bool client_( void );
+bool client_( int sfd );
