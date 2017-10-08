@@ -71,21 +71,24 @@ void insert_new_client(client_t* client){
 bool authenticate_client(char *clientName, char *clientPassword){
 	
 	
-	FILE *file;
-	char auth_file_username[6];
-	char auth_file_password[6];
+	FILE *fp;
+	const char auth_username[6];
+	const char auth_password[6];
 
-	if ((file = fopen("bin/Authentication.txt", "r")) == NULL) {
+	if((fp = fopen("bin/Authentication.txt", "r")) == NULL) {
 		perror("fopen");
 		return false;
 	}
 
+	while(fgetc(fp) != '\n');
 
-	while (fscanf(file, "%s %s\n", auth_file_username, auth_file_password) > 0) {
+	while(fscanf(fp, "%s %s\n", auth_username, auth_password) > 0) {
 
-		if (strcmp(auth_file_username, clientName) == 0 && strcmp(auth_file_password, clientPassword) == 0) {
-			return true;
-		}
+	printf("auth_username: %s\n", auth_username);
+	printf("auth_password: %s\n", auth_password);
+	if(strcmp(auth_username, clientName) == 0 && strcmp(auth_password, clientPassword) == 0) {
+		return true;
+	}
 	}
 
 	return false; 
@@ -128,7 +131,9 @@ bool client_( int sfd ){
 	write_socket(client->sfd, WELCOME_LOGIN_MSG);
 
 	get_client_name(client);
+	printf("Client Name %s\n", client->clientName);
 	get_client_password(client);
+	printf("Client Password %s\n", client->clientPassword);
 
 	if(!authenticate_client(client->clientName, client->clientPassword)){
 		
