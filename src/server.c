@@ -223,7 +223,7 @@ int main(int argc, char *argv[])
 
 		printf("Sending Welcome Message\n\n");
 		
-		do{
+		/*do{
 		
 			//sending welcome msg to client
 			//write_socket(pfd, WELCOME_LOGIN_MSG);
@@ -232,7 +232,7 @@ int main(int argc, char *argv[])
 				//play hangman
 			};
 			
-		}while(clientConnection);
+		}while(clientConnection);*/
 
 		 //Receives a message from the new socket
         	if (recv(nfd, buf_rec, BUF_SIZE, 0) == -1) {
