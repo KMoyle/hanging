@@ -49,9 +49,9 @@ const char *MAIN_MENU = "\n"
 int passive_connection( addrinfo *rp, char *port);
 int read_socket( int sfd, char *buf_rec );
 void write_socket( int sfd, const char *buf_snd );
-void insert_new_client( client_t* client);
-int get_client_name(client_t* client);
-int get_client_password(client_t* client);
+void insert_new_client( client_t* client );
+int get_client_name( client_t* client );
+int get_client_password( client_t* client );
 void input_client_info( client_t* client );
-bool authenticate_client(char *clientName, char *clientPassword);
-bool client_( );
+bool authenticate_client( char *clientName, char *clientPassword );
+bool client_( void );
