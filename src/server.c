@@ -80,7 +80,6 @@ bool authenticate_client(char *clientName, char *clientPassword){
 		return false;
 	}
 
-	while (fgetc(file) != '\n'); 
 
 	while (fscanf(file, "%s %s\n", auth_file_username, auth_file_password) > 0) {
 
@@ -117,16 +116,20 @@ int get_client_password(client_t* client){
 	return 0;
 }
 
-bool client_( void ){
+bool client_( int sfd ){
 	client_t *client;
 
 	memset(buf_rec, 0, sizeof(buf_rec));
 	memset(buf_snd, 0, sizeof(buf_snd));
+	
+	client->sfd = sfd;
+
+	//sending welcome msg to client
+	write_socket(client->sfd, WELCOME_LOGIN_MSG);
 
 	get_client_name(client);
 	get_client_password(client);
 
-	
 	if(!authenticate_client(client->clientName, client->clientPassword)){
 		
 		printf("AUTH FAILED");
@@ -223,16 +226,15 @@ int main(int argc, char *argv[])
 
 		printf("Sending Welcome Message\n\n");
 		
-		/*do{
-		
-			//sending welcome msg to client
-			//write_socket(pfd, WELCOME_LOGIN_MSG);
+		do{
 
-			if(client_()){
+			if(client_(nfd)){
 				//play hangman
-			};
+			}else{
+				clientConnection = false;
+			}
 			
-		}while(clientConnection);*/
+		}while(clientConnection);
 
 		 //Receives a message from the new socket
         	if (recv(nfd, buf_rec, BUF_SIZE, 0) == -1) {
