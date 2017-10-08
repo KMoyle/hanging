@@ -43,7 +43,7 @@ int read_socket( int sfd, char *buf_rec ){
 	//Receives a message from sfd
         if (recv(sfd, buf_rec, BUF_SIZE, 0) == -1) {
             	perror("receiving input");
-            	exit(EXIT_FAILURE);
+            	exit(1);
         	}
 	return 0;
 }
@@ -51,8 +51,9 @@ int read_socket( int sfd, char *buf_rec ){
 void write_socket( int sfd, const char *buf_snd )
 {
 
-    if (write(sfd, buf_snd, BUF_SIZE) == -1) {
+    if (send(sfd, buf_snd, BUF_SIZE, 0) == -1) {
         perror("writing output");
+	exit(1);
     }
 }
 
@@ -116,12 +117,15 @@ int get_client_password(client_t* client){
 	return 0;
 }
 
-bool client_( ){
-
+bool client_( void ){
 	client_t *client;
+
+	memset(buf_rec, 0, sizeof(buf_rec));
+	memset(buf_snd, 0, sizeof(buf_snd));
 
 	get_client_name(client);
 	get_client_password(client);
+
 	
 	if(!authenticate_client(client->clientName, client->clientPassword)){
 		
@@ -219,18 +223,17 @@ int main(int argc, char *argv[])
 
 		printf("Sending Welcome Message\n\n");
 		
-		//sending welcome msg to client
-		write_socket(pfd, WELCOME_LOGIN_MSG);	
+		do{
 		
-		
-		/*while(clientConnection){
-		
+			//sending welcome msg to client
+			//write_socket(pfd, WELCOME_LOGIN_MSG);
+
 			if(client_()){
-				
 				//play hangman
-			}
+			};
 			
-		}*/
+		}while(clientConnection);
+
 		 //Receives a message from the new socket
         	if (recv(nfd, buf_rec, BUF_SIZE, 0) == -1) {
             		perror("receiving");
