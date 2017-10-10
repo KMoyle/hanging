@@ -60,17 +60,17 @@ void initialise_game(Game game){
 	game.guesses_remaining = game.guesses_allowed;
 	game.guessed_characters[0] = '@'; // Dummy character for testing purposes
 	// Not sure how to go about next line with pointer etc.
-	game.encoded_words = produce_encoded_text(game, game.game_words);
+	//game.encoded_words = produce_encoded_text(game, game.game_words);
 }
 
 /* Given an instance of a game and a guessed letter, do required processing for a guess */
-void process_guess(Game game, char letter){
+void process_guess(Game game, char *letter){
 
 	game.guessed_characters[guesses] = letter;
 
-	for(int i = 0; i < strlen(words_length); i++){
+	for(int i = 0; i < strlen(game.encoded_words); i++){
 	
-		if(letter != game.game_words[i]){
+		if(letter != game.encoded_words[i]){
 	
 			game.guesses_remaining--;
 		}
@@ -81,9 +81,9 @@ void process_guess(Game game, char letter){
 
 
 /* Given an array of guessed letters and set of Words, return the updated encoded text i.e "_ _ _ _ _  _ _ _" */
-char *produce_encoded_text(Game game, Word words){
+char produce_encoded_text(Game game, Word words){
 
-	for(int i = 0; i < strlen(words_length); i++){
+	for(int i = 0; i < strlen(game.encoded_words); i++){
 		for(int j = 0; j < strlen(words.word_a); j++){
 			
 			if(game.guessed_characters[i] == words.word_a[j]){
@@ -157,13 +157,13 @@ Steps on server side (I think):
 /*  Below is a main function and compile instruction to test parts of code without integrating it with the server   */
 
 /********************************************************************************************************************/
-
+/*
 int main(int argc, char *argv[]){
 	read_hangman_list();
 	Game game;
 	initialise_game(game);
 
-}
+}*/
 
 //  Compile using:
 //  gcc -std=gnu99 -pthread src/game.c -I./headers -o bin/game
