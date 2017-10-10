@@ -58,16 +58,16 @@ const char *WELCOME_LOGIN_MSG = "\n"
 const char *USERNAME = "\nPlease enter your username-->";
 const char *PASSWORD = "\nPlease enter your password-->";
 const char *UNAUTH = "\n"
-		      "Unaurtherised to play"
+		      "Unautherised to play"
 		      "\n";
 const char *MAIN_MENU = "\n"
 			"=======MAIN MENU=======\n"
 			"\n"
 			"\n"
-			"Please enter a selection"
+			"Please enter a selection\n"
 			"<1> Play Hangman\n"
-			"<1> Play Hangman\n"
-			"<1> Play Hangman\n"
+			"<2> Leaderboard\n"
+			"<3> Quit Hangman\n"
 			"\n"
 			"\n"
 			"Selection option 1-3 ->";
@@ -77,7 +77,7 @@ void write_socket( int sfd, const char *buf_snd );
 void insert_new_client( client_t* client );
 int get_client_name( client_t* client );
 int get_client_password( client_t* client );
-int get_menu_selection( int sfd );
+int get_menu_selection( client_t* client );
 void input_client_info( client_t* client );
 bool authenticate_client( char *clientName, char *clientPassword );
 bool client_( int sfd );

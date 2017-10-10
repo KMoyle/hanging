@@ -36,7 +36,7 @@ void write_socket( int sfd, const char *buf_snd )
 	exit(1);
     }
 }
-
+/*
 void insert_new_client(client_t* client ){
 
 	client_node_t *new_client = (client_node_t*) malloc(sizeof(client_node_t));
@@ -44,9 +44,7 @@ void insert_new_client(client_t* client ){
 	memcpy(&new_client->client, client, sizeof(client_t));
 	
 	clients.tail = new_client;
-
-	printf("client list\n name=%s\n password=%s\n", new_client,new_client);
-}
+}*/
 
 bool authenticate_client(char *clientName, char *clientPassword){
 	
@@ -64,8 +62,6 @@ bool authenticate_client(char *clientName, char *clientPassword){
 
 	while(fscanf(fp, "%s %s\n", auth_username, auth_password) > 0) {
 
-	printf("auth_username: %s\n", auth_username);
-	printf("auth_password: %s\n", auth_password);
 	if(strcmp(auth_username, clientName) == 0 && strcmp(auth_password, clientPassword) == 0) {
 		return true;
 	}
@@ -99,21 +95,21 @@ int get_client_password(client_t* client){
 	
 	return 0;
 }
-/*
-int get_menu_selection( client ){
+
+int get_menu_selection( client_t* client ){
 	
-	char menu_selection;
+	char menu_selection[BUF_SIZE];
 
 	write_socket(client->sfd, MAIN_MENU);
 
-	if(read_socket(client->sfd,menu_selection) == -1){
+	if(read_socket(client->sfd, menu_selection) == -1){
 		perror("cant read socket");
 		return -1;
 	}
 	
 	return atoi(menu_selection);	
 	
-}*/
+}
 
 bool client_( int sfd ){
 	client_t *client;
@@ -139,11 +135,34 @@ bool client_( int sfd ){
 		
 		return false;
 	}
+	//insert_new_client(client);
+
+	int menu_selection = get_menu_selection(client);
+
+	switch(menu_selection){
+
+		case 1:
+			//PLAY HANGMAN HERE
+		break;
+
+		case 2:
+			//SHOW LEADERBOARD
+		break;
+		case 3:	
+			//QUIT GAME	
+		break;
+	}
 	
-	insert_new_client(client);
+	
+	
 
 	return true;	 
 	
+}
+bool play_hangman(client_t* client){
+
+
+
 }
 
 int passive_connection(addrinfo *rp, char *port){
@@ -233,13 +252,9 @@ int main(int argc, char *argv[])
 		
 		do{
 
-			if(client_(nfd)){
-				printf("Sending Main menu");
-				//get_menu_selection(pfd);
-				
-			}else{
-				clientConnection = false;
-			}
+			client_(nfd);
+		
+
 			
 		}while(clientConnection);
 
