@@ -18,16 +18,30 @@ typedef struct{
 
 Word words[288];
 
-typedef struct{
-	int guesses_used;
+typedef struct{	
 	int guesses_allowed;
-	char word_one[20];
-	char word_two[20];
-	int length_word_one;
-	int length_word_two;
-	char encoded_word_one[20];
-	char encoded_word_two;
+	int guesses_remaining;
+	Word game_words;
+	char encoded_words[40];
+	char guessed_characters[26];
 }Game;	
+
+void read_hangman_list();
+int get_word_lengths(Word words);
+int calculate_num_guesses(Word words);
+Word pick_random_words();
+void initialise_game(Game game);
+void process_guess(Game game, char letter);
+char *produce_encoded_text(char *letters, Word words);
+int check_completion(Game game);
+
+
+
+
+
+
+
+
 
 
 
