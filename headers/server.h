@@ -19,10 +19,13 @@
 #include <errno.h>
 #include <netdb.h>     
 
+#include "game.h"
+
 #define DEFAULT_PORT    "12345"
 #define BUF_SIZE        256
 #define QUE_LENGTH	10
 #define PORT_LENGTH	5
+
 
 typedef struct addrinfo addrinfo;
 typedef struct client_details client_t;
@@ -81,3 +84,4 @@ int get_menu_selection( client_t* client );
 void input_client_info( client_t* client );
 bool authenticate_client( char *clientName, char *clientPassword );
 bool client_( int sfd );
+bool play_hangman( client_t* client);
