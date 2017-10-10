@@ -24,6 +24,7 @@ typedef struct{
 	Word game_words;
 	char encoded_words[40];
 	char guessed_characters[26];
+	int completion_flag;
 }Game;	
 
 void read_hangman_list();

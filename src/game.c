@@ -51,29 +51,26 @@ Word pick_random_words(){
 
 /* Initialises all variables for a instance of a game */
 void initialise_game(Game game){
+	game.completion_flag = 0;
 	game.game_words = pick_random_words();
 	game.guesses_allowed = calculate_num_guesses(game.game_words);
 	game.guesses_remaining = game.guesses_allowed;
 	game.guessed_characters[0] = '@'; // Dummy character for testing purposes
+	// Not sure how to go about next line with pointer etc.
 	//game.encoded_words = produce_encoded_text(game.guessed_characters, game.game_words);
 }
 
 /* Given an instance of a game and a guessed letter, do required processing for a guess */
 void process_guess(Game game, char letter){
-	// Decrement guesses remaining
-	// Update array of guessed letters
-	// Update array of decoded text
-	// Call function to check if the game is finished
+	game.guesses_remaining--;
+	// Update char array of guessed letters
+	// Update char array of decoded text
 }
 
 
-/* Given an array of guessed letters and set of Words, return the updated encoded text "_ _ _  _ _ _ _" */
-char *produce_encoded_text(char *letters, Word words){
-	char *encoded_text = malloc(sizeof(char) * get_word_lengths(words));
-	// Implement:
-	// - Convert words to single char array
-	// - For each element in char array (besides space), if element is not in array of guessed letter turn it into an underscore
-	return encoded_text;
+/* Given an array of guessed letters and set of Words, return the updated encoded text i.e "_ _ _ _ _  _ _ _" */
+char *produce_encoded_text(char *guessed_letters, Word words){
+	
 }
 
 
@@ -81,29 +78,48 @@ char *produce_encoded_text(char *letters, Word words){
 int check_completion(Game game){
 	int flag = 0;
 	
-	// If encoded_text contains no underscores, set flag to 2 to indicate game has finished and player won (important this is 		done before checking guess count)
+	// If encoded_text contains no underscores, set flag = 2 to indicate game has finished and player won (important this is 		done before checking guess count)
 
-	// If remaining guess = 1 and flag != 2, set flag to 1 to indicate game has finished and player lost
+	// If remaining guess = 1 and flag != 2, set flag = 1 to indicate game has finished and player lost
+	if (game.guesses_remaining == 1 && flag != 2){
+		flag = 1;
+	}
 	
+	game.completion_flag = flag;
 	return flag;
 }
 
+/*
 
+Steps on server side (I think):
+
+	- call read_hangman_list() somewhere that will only be called once
+	- for each time a client selects play hangman, create a new game object by calling Game game
+	- after this call initialise_game(game)
+	- start a while loop that continues while game.completion_flag == 0
+		- Display all the current game data to player (guesses remaining, characters guessed, encoded text) by calling 			game.guesses_remaining etc
+		- Read the players guess
+		- call process_guess(game, letter)
+		- call check_completion(game)
+	- Check what game.completion_flag equals and display relevent message
+	- Update leaderboard
+	- Deallocate memory used by that game object ??
+	- Display main menu
+
+*/
 
 
 /********************************************************************************************************************/
 
-/**************************************** Below is for testing purposes only ****************************************/
+/*  Below is a main function and compile instruction to test parts of code without integrating it with the server   */
 
 /********************************************************************************************************************/
 
 int main(int argc, char *argv[]){
 	read_hangman_list();
-	//printf("%s\n", words[0].word_b);
-	//Word test = pick_random_words();
-	//printf("%s, %s\n", test.word_a, test.word_b);
-	//int test = pick_random_words();
-	//printf("%d\n", test);
+	Game game;
+	initialise_game(game);
+
 }
 
 //  Compile using:
