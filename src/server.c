@@ -5,6 +5,7 @@
 
 
 #include "server.h"
+//#include "game.c"
 
 char buf_rec[BUF_SIZE];
 char buf_snd[BUF_SIZE];
@@ -62,9 +63,9 @@ bool authenticate_client(char *clientName, char *clientPassword){
 
 	while(fscanf(fp, "%s %s\n", auth_username, auth_password) > 0) {
 
-	if(strcmp(auth_username, clientName) == 0 && strcmp(auth_password, clientPassword) == 0) {
+		if(strcmp(auth_username, clientName) == 0 && strcmp(auth_password, clientPassword) == 0) {
 		return true;
-	}
+		}
 	}
 
 	fclose(fp);
@@ -161,8 +162,25 @@ bool client_( int sfd ){
 }
 bool play_hangman(client_t* client){
 
+	Game game;
+	char letter[1]; //char to retrive guess
 
+	initialise_game(game);
 
+	//Game loop
+
+	while(!game.completion_flag){
+		//send HM interface
+		write_socket(client->sfd, game.encoded_words);
+		//read the clients guess
+		read_socket(client->sfd, letter);
+		//process guess and change guess count
+		process_guess(game, letter);
+		//check to see if game is completed game.completion_flag = 1
+		game.completion_flag = check_completion(game);
+		//update interface correct guesses etc
+		//game.encoded_words = produce_encoded_text(game, game.game_words); 
+	}
 }
 
 int passive_connection(addrinfo *rp, char *port){
@@ -222,7 +240,6 @@ int main(int argc, char *argv[])
 {
 	int sfd, nfd;
 	addrinfo rp;
-	//client_t* client;
 
 	// Get port number for server to listen on, if not correct defalut is assigned
 	if (argc == 2) {
@@ -236,6 +253,7 @@ int main(int argc, char *argv[])
 
 	printf("server is now listnening ...\n\n");
 
+	//read_hangman_list();
 
 	for(;;){  /* main accept() loop */
 		
@@ -274,5 +292,4 @@ int main(int argc, char *argv[])
 
 }
 
-//int establish_new_connection(){}
 
