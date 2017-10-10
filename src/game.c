@@ -1,5 +1,8 @@
 #include "game.h"
 
+	int guesses = 0;
+	int counter = 0;
+
 /* Reads the hangman text file of words and stores all the words in a global array */
 void read_hangman_list(){
 
@@ -57,20 +60,51 @@ void initialise_game(Game game){
 	game.guesses_remaining = game.guesses_allowed;
 	game.guessed_characters[0] = '@'; // Dummy character for testing purposes
 	// Not sure how to go about next line with pointer etc.
-	//game.encoded_words = produce_encoded_text(game.guessed_characters, game.game_words);
+	game.encoded_words = produce_encoded_text(game, game.game_words);
 }
 
 /* Given an instance of a game and a guessed letter, do required processing for a guess */
 void process_guess(Game game, char letter){
-	game.guesses_remaining--;
-	// Update char array of guessed letters
-	// Update char array of decoded text
+
+	game.guessed_characters[guesses] = letter;
+
+	for(int i = 0; i < strlen(words_length); i++){
+	
+		if(letter != game.game_words[i]){
+	
+			game.guesses_remaining--;
+		}
+	}
+
+	guesses++;
 }
 
 
 /* Given an array of guessed letters and set of Words, return the updated encoded text i.e "_ _ _ _ _  _ _ _" */
-char *produce_encoded_text(char *guessed_letters, Word words){
-	
+char *produce_encoded_text(Game game, Word words){
+
+	for(int i = 0; i < strlen(words_length); i++){
+		for(int j = 0; j < strlen(words.word_a); j++){
+			
+			if(game.guessed_characters[i] == words.word_a[j]){
+
+				game.encoded_words[j] = game.guessed_characters[i];	
+			}else{ 
+				game.encoded_words[j] = '_';
+			}
+		}
+		for(int k = 0; k < strlen(words.word_b); k++){
+
+			if(game.guessed_characters[i] == words.word_b[k]){
+				
+				game.encoded_words[k] = game.guessed_characters[i];		
+			}else{ 
+				game.encoded_words[strlen(words.word_a)+k] = '_';
+			}
+		}	
+	}
+		
+	return game.encoded_words;	
 }
 
 
@@ -78,7 +112,16 @@ char *produce_encoded_text(char *guessed_letters, Word words){
 int check_completion(Game game){
 	int flag = 0;
 	
-	// If encoded_text contains no underscores, set flag = 2 to indicate game has finished and player won (important this is 		done before checking guess count)
+	// If encoded_text contains no underscores, set flag = 2 to indicate game has finished and player won 
+	for(int j = 0; j < strlen(game.encoded_words); j++){
+		if(game.encoded_words[j] == '_'){
+			counter++;
+		}
+	}
+	//if counter = 0 then correct word has been guessed an client wins
+	if(counter == 0){
+		flag = 2; //game one
+	}
 
 	// If remaining guess = 1 and flag != 2, set flag = 1 to indicate game has finished and player lost
 	if (game.guesses_remaining == 1 && flag != 2){
