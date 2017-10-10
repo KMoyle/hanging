@@ -5,7 +5,6 @@
 
 
 #include "server.h"
-//#include "game.c"
 
 char buf_rec[BUF_SIZE];
 char buf_snd[BUF_SIZE];
@@ -115,6 +114,7 @@ int get_menu_selection( client_t* client ){
 bool client_( int sfd ){
 	client_t *client;
 	client_node_t *client_list;
+	bool win = false;
 
 	memset(buf_rec, 0, sizeof(buf_rec));
 	memset(buf_snd, 0, sizeof(buf_snd));
@@ -139,11 +139,12 @@ bool client_( int sfd ){
 	//insert_new_client(client);
 
 	int menu_selection = get_menu_selection(client);
+	printf("client selected %d", menu_selection);
 
 	switch(menu_selection){
 
 		case 1:
-			//PLAY HANGMAN HERE
+			win = play_hangman(client);
 		break;
 
 		case 2:
