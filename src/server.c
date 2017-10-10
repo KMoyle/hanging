@@ -67,6 +67,7 @@ bool authenticate_client(char *clientName, char *clientPassword){
 	}
 	}
 
+	fclose(fp);
 	return false; 
 
 
