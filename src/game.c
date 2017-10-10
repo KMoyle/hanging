@@ -18,10 +18,13 @@ bool read_hangman_list(){
 
 	fclose(pf);
 
-	return words; 
+	return 0; 
 }
 
-
+int get_word_lengths(Word words){
+	int word_length = strlen(words.word_a) + strlen(words.word_b);
+	return word_length;
+}
 
 
 /********************************************************************************************************************/
@@ -32,12 +35,12 @@ bool read_hangman_list(){
 
 int main(int argc, char *argv[]){
 	read_hangman_list();
-	printf("%s\n", words[287].word_b);
-	
+	printf("%s\n", words[0].word_b);
 }
 
-// Compile using:
-// gcc -std=gnu99 -pthread src/game.c -I./headers -o bin/game
+//  Compile using:
+//  gcc -std=gnu99 -pthread src/game.c -I./headers -o bin/game
+//  ./bin/game
 
 
 
