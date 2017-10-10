@@ -22,8 +22,19 @@ bool read_hangman_list(){
 }
 
 int get_word_lengths(Word words){
-	int word_length = strlen(words.word_a) + strlen(words.word_b);
-	return word_length;
+	int words_length = strlen(words.word_a) + strlen(words.word_b);
+	return words_length;
+}
+
+int calculate_num_guesses(int words_length){
+	int case1 = words_length + 10;
+	int case2 = 26;
+	
+	if case1 < case2{
+		return case1;
+	} else{
+		return case2;
+	}
 }
 
 
