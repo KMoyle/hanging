@@ -32,8 +32,8 @@ int get_word_lengths(Word words);
 int calculate_num_guesses(Word words);
 Word pick_random_words();
 void initialise_game(Game game);
-void process_guess(Game game, char* letter);
-char *produce_encoded_text(Game game, Word words);
+void process_guess(Game game, char *letter);
+char produce_encoded_text(Game game, Word words);
 int check_completion(Game game);
 
 
