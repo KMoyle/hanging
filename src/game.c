@@ -63,14 +63,14 @@ void initialise_game(Game game){
 }
 
 /* Given an instance of a game and a guessed letter, do required processing for a guess */
-void process_guess(Game game, char *letter){
+void process_guess(Game game, char letter){
 
-	game.guessed_characters[guesses] = *letter;
-
+	game.guessed_characters[guesses] = letter;
+	puts("holle");
 	for(int i = 0; i < strlen(game.encoded_words); i++){
-	
-		if(*letter != game.encoded_words[i]){
-	
+		puts("gig");
+		if(letter != game.encoded_words[i]){
+			printf("letter = %c\n", letter);
 			game.guesses_remaining--;
 		}
 	}
@@ -82,7 +82,7 @@ void process_guess(Game game, char *letter){
 /* Given an array of guessed letters and set of Words, return the updated encoded text i.e "_ _ _ _ _  _ _ _" */
 char produce_encoded_text(Game game, Word words){
 
-	for(int i = 0; i < strlen(game.encoded_words); i++){
+	for(int i = 0; i < 20; i++){
 		for(int j = 0; j < strlen(words.word_a); j++){
 			
 			if(game.guessed_characters[i] == words.word_a[j]){
