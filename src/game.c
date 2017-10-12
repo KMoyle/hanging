@@ -51,7 +51,6 @@ Word pick_random_words(){
 }
 
 
-
 /* Initialises all variables for a instance of a game */
 void initialise_game(Game game){
 	game.completion_flag = 0;
@@ -132,15 +131,17 @@ int check_completion(Game game){
 	return flag;
 }
 
+void hangman_interface(Game *game, char *interface){
+
+
+
+}
+
 /*
 
 Steps on server side (I think):
 
-	- call read_hangman_list() somewhere that will only be called once
-	- for each time a client selects play hangman, create a new game object by calling Game game
-	- after this call initialise_game(game)
-	- start a while loop that continues while game.completion_flag == 0
-		- Display all the current game data to player (guesses remaining, characters guessed, encoded text) by calling 			game.guesses_remaining etc
+		- Display all the current game data to player (guesses remaining, characters guessed, encoded text) by calling game.guesses_remaining etc
 		- Read the players guess
 		- call process_guess(game, letter)
 		- call check_completion(game)

@@ -35,6 +35,7 @@ void initialise_game(Game game);
 void process_guess(Game game, char *letter);
 char produce_encoded_text(Game game, Word words);
 int check_completion(Game game);
+void hangman_interface(Game *game, char *interface);
 
 
 

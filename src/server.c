@@ -100,8 +100,10 @@ int get_menu_selection( client_t* client ){
 	
 	char menu_selection[BUF_SIZE];
 
+	memset(menu_selection, 0, sizeof(menu_selection));
+	
 	write_socket(client->sfd, MAIN_MENU);
-
+	
 	if(read_socket(client->sfd, menu_selection) == -1){
 		perror("cant read socket");
 		return -1;
@@ -124,10 +126,9 @@ bool client_( int sfd ){
 	//sending welcome msg to client
 	write_socket(client->sfd, WELCOME_LOGIN_MSG);
 
+	//get client name and password
 	get_client_name(client);
-	printf("Client Name %s\n", client->clientName);
 	get_client_password(client);
-	printf("Client Password %s\n", client->clientPassword);
 
 	if(!authenticate_client(client->clientName, client->clientPassword)){
 		
@@ -137,9 +138,9 @@ bool client_( int sfd ){
 		return false;
 	}
 	//insert_new_client(client);
-
+	
 	int menu_selection = get_menu_selection(client);
-	printf("client selected %d", menu_selection);
+	printf("menu_selection %d\n",menu_selection);
 
 	switch(menu_selection){
 
@@ -165,12 +166,13 @@ bool play_hangman(client_t* client){
 
 	Game game;
 	char letter[1]; //char to retrive guess
-
+	game.completion_flag = 0;
 	initialise_game(game);
 
 	//Game loop
 
-	while(!game.completion_flag){
+	while(game.completion_flag == 0){
+		puts("we here?");
 		//send HM interface
 		write_socket(client->sfd, game.encoded_words);
 		//read the clients guess
