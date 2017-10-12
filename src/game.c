@@ -66,11 +66,11 @@ void initialise_game(Game game){
 /* Given an instance of a game and a guessed letter, do required processing for a guess */
 void process_guess(Game game, char *letter){
 
-	game.guessed_characters[guesses] = letter;
+	game.guessed_characters[guesses] = *letter;
 
 	for(int i = 0; i < strlen(game.encoded_words); i++){
 	
-		if(letter != game.encoded_words[i]){
+		if(*letter != game.encoded_words[i]){
 	
 			game.guesses_remaining--;
 		}
@@ -104,7 +104,7 @@ char produce_encoded_text(Game game, Word words){
 		}	
 	}
 		
-	return game.encoded_words;	
+	return *game.encoded_words;	
 }
 
 

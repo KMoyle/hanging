@@ -50,8 +50,8 @@ bool authenticate_client(char *clientName, char *clientPassword){
 	
 	
 	FILE *fp;
-	const char auth_username[6];
-	const char auth_password[6];
+	char auth_username[6];
+	char auth_password[6];
 
 	if((fp = fopen("bin/Authentication.txt", "r")) == NULL) {
 		perror("fopen");
