@@ -53,11 +53,11 @@ Word pick_random_words(){
 
 /* Initialises all variables for a instance of a game */
 void initialise_game(Game game){
-	game.completion_flag = 0;
+	//game.completion_flag = 0;
 	game.game_words = pick_random_words();
 	game.guesses_allowed = calculate_num_guesses(game.game_words);
 	game.guesses_remaining = game.guesses_allowed;
-	game.guessed_characters[0] = '@'; // Dummy character for testing purposes
+	//game.guessed_characters[0] = '@'; // Dummy character for testing purposes
 	// Not sure how to go about next line with pointer etc.
 	//game.encoded_words = produce_encoded_text(game, game.game_words);
 }
@@ -131,9 +131,34 @@ int check_completion(Game game){
 	return flag;
 }
 
-void hangman_interface(Game *game, char *interface){
+void hangman_interface(Game game, char *interface){
 
+	int divider = 30;
+	char container[100] = {0}; 
 
+	for(int i = 0; i < divider; i++){
+	
+		container[i] = '-';
+	}
+	strcat(interface, container);
+
+	sprintf(container, "\n\nGuessed letters: %s\n", game.guessed_characters);
+	
+	strcat(interface, container);
+	
+	sprintf(container, "\nNumber of guesses remaining: %d\n", game.guesses_remaining);
+
+	strcat(interface, container);
+	
+	sprintf(container, "\nWord: %s\n", game.encoded_words);
+	
+	strcat(interface, container);
+
+	sprintf(container, "\nEnter your guess - ");
+
+	strcat(interface, container);
+
+	printf("%s\n", interface);
 
 }
 
@@ -141,7 +166,6 @@ void hangman_interface(Game *game, char *interface){
 
 Steps on server side (I think):
 
-		- Display all the current game data to player (guesses remaining, characters guessed, encoded text) by calling game.guesses_remaining etc
 		- Read the players guess
 		- call process_guess(game, letter)
 		- call check_completion(game)

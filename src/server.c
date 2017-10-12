@@ -112,9 +112,26 @@ int get_menu_selection( client_t* client ){
 	return atoi(menu_selection);	
 	
 }
+/*
+int get_guess( client_t* client,  ){
+	
+	char letter[BUF_SIZE];
+
+	memset(letter, 0, sizeof(letter));
+	
+	write_socket(client->sfd, MAIN_MENU);
+	
+	if(read_socket(client->sfd, menu_selection) == -1){
+		perror("cant read socket");
+		return -1;
+	}
+	
+	return atoi(menu_selection);	
+	
+}*/
 
 bool client_( int sfd ){
-	client_t *client;
+	client_t* client = malloc(sizeof(client_t));
 	client_node_t *client_list;
 	bool win = false;
 
@@ -156,27 +173,31 @@ bool client_( int sfd ){
 		break;
 	}
 	
-	
-	
-
 	return true;	 
 	
 }
 bool play_hangman(client_t* client){
 
 	Game game;
-	char letter[1]; //char to retrive guess
+	char interface[BUF_SIZE];
+	char letter[50]; //char to retrive guess
 	game.completion_flag = 0;
+	memset(letter, 0, sizeof(letter));
+	
 	initialise_game(game);
 
 	//Game loop
-
 	while(game.completion_flag == 0){
-		puts("we here?");
+		hangman_interface(game, interface);
 		//send HM interface
-		write_socket(client->sfd, game.encoded_words);
+		write_socket(client->sfd, interface);
 		//read the clients guess
-		read_socket(client->sfd, letter);
+		if(read_socket(client->sfd, letter) == -1){
+			perror("Unable to read guessed char");
+			exit(1);
+		}
+
+		printf("letter = %s", letter);
 		//process guess and change guess count
 		process_guess(game, letter);
 		//check to see if game is completed game.completion_flag = 1
