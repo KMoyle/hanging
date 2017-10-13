@@ -177,13 +177,19 @@ bool client_( int sfd ){
 bool play_hangman(client_t* client){
 
 	Game game;
-	Word words;
+
+	//Word words;
 	char interface[BUF_SIZE];
-	char letter; //char to retrive guess
+	char *letter; //char to retrive guess
 	game.completion_flag = 0;
 
 	
 	initialise_game(game);
+		
+	printf("--TESTS--\n");
+	printf("Clients words: %d\n", game.guesses_allowed);
+	printf("--TESTS--");
+	while(1){}
 
 	//Game loop
 	while(game.completion_flag == 0){
@@ -193,10 +199,9 @@ bool play_hangman(client_t* client){
 		hangman_interface(game, interface);
 		//send HM interface
 		write_socket(client->sfd, interface);
-		puts("oi");
-		letter = get_guess(game, client);
+		*letter = get_guess(game, client);
 		//process guess and change guess count
-		process_guess(game, letter);
+		process_guess(game, *letter);
 		//check to see if game is completed game.completion_flag = 1
 		//update interface correct guesses etc
 		//game.encoded_words = produce_encoded_text(game, game.game_words); 

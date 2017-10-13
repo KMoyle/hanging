@@ -59,16 +59,15 @@ void initialise_game(Game game){
 	game.guesses_remaining = game.guesses_allowed;
 	//game.guessed_characters[0] = '@'; // Dummy character for testing purposes
 	// Not sure how to go about next line with pointer etc.
-	//game.encoded_words = produce_encoded_text(game, game.game_words);
+	//game.encoded_words = 
+	produce_encoded_text(game, game.game_words);
 }
 
 /* Given an instance of a game and a guessed letter, do required processing for a guess */
 void process_guess(Game game, char letter){
 
 	game.guessed_characters[guesses] = letter;
-	puts("holle");
 	for(int i = 0; i < strlen(game.encoded_words); i++){
-		puts("gig");
 		if(letter != game.encoded_words[i]){
 			printf("letter = %c\n", letter);
 			game.guesses_remaining--;
