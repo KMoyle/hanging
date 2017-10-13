@@ -29,8 +29,8 @@ int get_word_lengths(Word words){
 }
 
 /* Given a set of words, returns the number of guesses given to that set */
-int calculate_num_guesses(Word words){
-	int case1 = get_word_lengths(words) + 10;
+int calculate_num_guesses(Word words_set){
+	int case1 = get_word_lengths(words_set) + 10;
 	int case2 = 26;
 	
 	if (case1 < case2){
@@ -41,36 +41,34 @@ int calculate_num_guesses(Word words){
 }
 
 /* Returns a random set of words from the list */
-Word pick_random_words(){
+void pick_random_words(Game *game){
+	Word result;
 	double min = 0;
 	double max = 287;	
 	srand((unsigned) time(NULL));
 	double scaled = (double)rand()/RAND_MAX;	
 	double random_index = (max - min + 1)*scaled + min;
-	return words[(int) random_index];
+	game->game_words = words[(int) random_index];
 }
 
 
 /* Initialises all variables for a instance of a game */
-void initialise_game(Game game){
+void initialise_game(Game *game){
 	//game.completion_flag = 0;
-	game.game_words = pick_random_words();
-	game.guesses_allowed = calculate_num_guesses(game.game_words);
-	game.guesses_remaining = game.guesses_allowed;
-	//game.guessed_characters[0] = '@'; // Dummy character for testing purposes
-	// Not sure how to go about next line with pointer etc.
-	//game.encoded_words = 
-	produce_encoded_text(game, game.game_words);
+	pick_random_words(game);
+	game->guesses_allowed = calculate_num_guesses(game->game_words);
+	game->guesses_remaining = game->guesses_allowed;
+	produce_encoded_text(game, game->game_words);
 }
 
 /* Given an instance of a game and a guessed letter, do required processing for a guess */
-void process_guess(Game game, char letter){
+void process_guess(Game *game, char letter){
 
-	game.guessed_characters[guesses] = letter;
-	for(int i = 0; i < strlen(game.encoded_words); i++){
-		if(letter != game.encoded_words[i]){
+	game->guessed_characters[guesses] = letter;
+	for(int i = 0; i < strlen(game->encoded_words); i++){
+		if(letter != game->encoded_words[i]){
 			printf("letter = %c\n", letter);
-			game.guesses_remaining--;
+			game->guesses_remaining--;
 		}
 	}
 
@@ -79,40 +77,41 @@ void process_guess(Game game, char letter){
 
 
 /* Given an array of guessed letters and set of Words, return the updated encoded text i.e "_ _ _ _ _  _ _ _" */
-char produce_encoded_text(Game game, Word words){
+char produce_encoded_text(Game *game, Word plain_text){
+
 
 	for(int i = 0; i < 20; i++){
-		for(int j = 0; j < strlen(words.word_a); j++){
+		for(int j = 0; j < strlen(plain_text.word_a); j++){
 			
-			if(game.guessed_characters[i] == words.word_a[j]){
+			if(game->guessed_characters[i] == plain_text.word_a[j]){
 
-				game.encoded_words[j] = game.guessed_characters[i];	
+				game->encoded_words[j] = game->guessed_characters[i];	
 			}else{ 
-				game.encoded_words[j] = '_';
+				game->encoded_words[j] = '_';
 			}
 		}
-		for(int k = 0; k < strlen(words.word_b); k++){
+		for(int k = 0; k < strlen(plain_text.word_b); k++){
 
-			if(game.guessed_characters[i] == words.word_b[k]){
+			if(game->guessed_characters[i] == plain_text.word_b[k]){
 				
-				game.encoded_words[k] = game.guessed_characters[i];		
+				game->encoded_words[k] = game->guessed_characters[i];		
 			}else{ 
-				game.encoded_words[strlen(words.word_a)+k] = '_';
+				game->encoded_words[strlen(plain_text.word_a)+k] = '_';
 			}
 		}	
 	}
-		
-	return *game.encoded_words;	
+	game->encoded_words[strlen(plain_text.word_a)+1] == ' ';
+	return *game->encoded_words;	
 }
 
 
 /* Given the current game object, check if all guesses are used or words are complete, set a flag to say game is finished */
-int check_completion(Game game){
+int check_completion(Game *game){
 	int flag = 0;
 	
 	// If encoded_text contains no underscores, set flag = 2 to indicate game has finished and player won 
-	for(int j = 0; j < strlen(game.encoded_words); j++){
-		if(game.encoded_words[j] == '_'){
+	for(int j = 0; j < strlen(game->encoded_words); j++){
+		if(game->encoded_words[j] == '_'){
 			counter++;
 		}
 	}
@@ -122,15 +121,15 @@ int check_completion(Game game){
 	}
 
 	// If remaining guess = 1 and flag != 2, set flag = 1 to indicate game has finished and player lost
-	if (game.guesses_remaining == 1 && flag != 2){
+	if (game->guesses_remaining == 1 && flag != 2){
 		flag = 1;
 	}
 	
-	game.completion_flag = flag;
+	game->completion_flag = flag;
 	return flag;
 }
 
-void hangman_interface(Game game, char *interface){
+void hangman_interface(Game *game, char *interface){
 
 	int divider = 30;
 	char container[100] = {0}; 
@@ -141,15 +140,15 @@ void hangman_interface(Game game, char *interface){
 	}
 	strcat(interface, container);
 
-	sprintf(container, "\n\nGuessed letters: %s\n", game.guessed_characters);
+	sprintf(container, "\n\nGuessed letters: %s\n", game->guessed_characters);
 	
 	strcat(interface, container);
 	
-	sprintf(container, "\nNumber of guesses remaining: %d\n", game.guesses_remaining);
+	sprintf(container, "\nNumber of guesses remaining: %d\n", game->guesses_remaining);
 
 	strcat(interface, container);
 	
-	sprintf(container, "\nWord: %s\n", game.encoded_words);
+	sprintf(container, "\nWord: %s\n", game->encoded_words);
 	
 	strcat(interface, container);
 

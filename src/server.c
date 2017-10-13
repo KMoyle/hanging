@@ -113,7 +113,7 @@ int get_menu_selection( client_t* client ){
 	
 }
 
-char get_guess( Game game, client_t* client){
+char get_guess( Game *game, client_t* client){
 	
 	char letter[2];
 
@@ -176,25 +176,29 @@ bool client_( int sfd ){
 }
 bool play_hangman(client_t* client){
 
-	Game game;
+	Game* game = malloc(sizeof(Game));
 
-	//Word words;
 	char interface[BUF_SIZE];
 	char *letter; //char to retrive guess
-	game.completion_flag = 0;
+	game->completion_flag = 0;
 
 	
 	initialise_game(game);
 		
 	printf("--TESTS--\n");
-	printf("Clients words: %d\n", game.guesses_allowed);
+	printf("Clients Words: %s %s\n", game->game_words.word_a, game->game_words.word_b);
+	printf("Clients Encoded Words: %s\n", game->encoded_words);
+	printf("Clients Guesses Allowed: %d\n", game->guesses_allowed);
+	printf("Clients Guesses Remaining: %d\n", game->guesses_remaining);
+	printf("Clients Guessed Characters: %s\n", game->guessed_characters);
+	printf("Clients Completion Flag: %d\n", game->completion_flag);
 	printf("--TESTS--");
-	while(1){}
+	while(1){}//Pause
 
 	//Game loop
-	while(game.completion_flag == 0){
+	while(game->completion_flag == 0){
 
-		game.completion_flag = check_completion(game);
+		game->completion_flag = check_completion(game);
 
 		hangman_interface(game, interface);
 		//send HM interface
@@ -278,7 +282,7 @@ int main(int argc, char *argv[])
 
 	printf("server is now listnening ...\n\n");
 
-	//read_hangman_list();
+	read_hangman_list();
 
 	for(;;){  /* main accept() loop */
 		
