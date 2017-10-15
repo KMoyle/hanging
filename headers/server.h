@@ -29,7 +29,7 @@
 
 typedef struct addrinfo addrinfo;
 typedef struct client_details client_t;
-typedef struct node client_node_t;
+typedef struct node *client_node_t;
 
 struct client_details {
 	int sfd;
@@ -40,14 +40,9 @@ struct client_details {
 };
 	
 struct node {
-	struct client_t *client;
+	client_t *client;
 	struct client_node_t *next;	
 };
-
-struct client_list {
-	struct client_node_t *head;
-	struct client_node_t *tail;
-}clients;
 
 
 const char *WELCOME_LOGIN_MSG = "\n"
@@ -79,7 +74,7 @@ const char *MAIN_MENU = "\n"
 int passive_connection( addrinfo *rp, char *port);
 int read_socket( int sfd, char *buf_rec );
 void write_socket( int sfd, const char *buf_snd );
-void insert_new_client( client_t* client );
+//void insert_new_client(client_node_t* client_list, client_t* client )
 int get_client_name( client_t* client );
 int get_client_password( client_t* client );
 int get_menu_selection( client_t* client );

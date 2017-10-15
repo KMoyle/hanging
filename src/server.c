@@ -37,13 +37,10 @@ void write_socket( int sfd, const char *buf_snd )
     }
 }
 /*
-void insert_new_client(client_t* client ){
-
-	client_node_t *new_client = (client_node_t*) malloc(sizeof(client_node_t));
+void insert_new_client(client_node_t* client_list, client_t* client ){
 	
-	memcpy(&new_client->client, client, sizeof(client_t));
+	client_list = malloc(sizeof(struct node));
 	
-	clients.tail = new_client;
 }*/
 
 /*Given the clients name and passowrd, checks the Authentication.txt for equivilent*/
@@ -174,8 +171,7 @@ bool client_( int sfd, client_t* client ){
 	
 	//to check if the client is new and needs to be authenticated
 	if (counter != 1){
-		//client_t* client = malloc(sizeof(client_t));
-		client_node_t *client_list;
+		client_node_t* client_list = malloc(sizeof(client_node_t));
 
 		memset(buf_rec, 0, sizeof(buf_rec));
 		memset(buf_snd, 0, sizeof(buf_snd));
@@ -197,7 +193,7 @@ bool client_( int sfd, client_t* client ){
 		counter = 1;
 		client->games_played = 0;
 		client->games_won = 0;
-		//insert_new_client(client);
+		//insert_new_client(client_list, client);
 	}//end client info and authentication
 
 	int menu_selection = get_menu_selection(client);
