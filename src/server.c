@@ -135,29 +135,32 @@ bool client_( int sfd ){
 	client_t* client = malloc(sizeof(client_t));
 	client_node_t *client_list;
 	bool win = false;
-	int counter = 0;
+	int counter;
 
-	memset(buf_rec, 0, sizeof(buf_rec));
-	memset(buf_snd, 0, sizeof(buf_snd));
-	
 	client->sfd = sfd;
 
-	//sending welcome msg to client
-	write_socket(client->sfd, WELCOME_LOGIN_MSG);
+	if (counter != 1){
+		memset(buf_rec, 0, sizeof(buf_rec));
+		memset(buf_snd, 0, sizeof(buf_snd));
 
-	//get client name and password
-	get_client_name(client);
-	get_client_password(client);
+		//sending welcome msg to client
+		write_socket(client->sfd, WELCOME_LOGIN_MSG);
 
-	if(!authenticate_client(client->clientName, client->clientPassword)){
+		//get client name and password
+		get_client_name(client);
+		get_client_password(client);
+
+		if(!authenticate_client(client->clientName, client->clientPassword)){
 		
-		printf("AUTH FAILED");
-		write_socket(client->sfd, UNAUTH);
+			printf("AUTH FAILED");
+			write_socket(client->sfd, UNAUTH);
 		
-		return false;
-	}
-	//insert_new_client(client);
-	
+			return false;
+		}
+		counter = 1;
+		//insert_new_client(client);
+	}//end client info and authentication
+
 	int menu_selection = get_menu_selection(client);
 	printf("menu_selection %d\n",menu_selection);
 

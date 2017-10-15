@@ -141,6 +141,7 @@ char* hangman_interface(Game *game){
 	int divider = 31;
 	char container[100]; 
 	static char *interface;
+	memset(container, 0, sizeof(container));
 	
 
 	interface = (char *) malloc(BUF_SIZE);
@@ -150,11 +151,11 @@ char* hangman_interface(Game *game){
 	
 		container[i] = '-';
 	}
-	puts("--we here--");
-	container[divider] = '\n'; 
+
+	container[divider] = '\0'; 
 	
 	strcat(interface, container);
-	puts("--we here--");
+
 	sprintf(container, "\n\nGuessed letters: %s\n", game->guessed_characters);
 	
 	strcat(interface, container);
