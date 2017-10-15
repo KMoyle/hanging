@@ -113,7 +113,42 @@ int get_menu_selection( client_t* client ){
 	return atoi(menu_selection);	
 	
 }
+void show_leaderboard(client_t* client){
+	
+	char leaderboard_container[60];
+	static char *leaderboard_interface;
+	leaderboard_interface = (char *) malloc(BUF_SIZE);
+	memset(leaderboard_container, 0, sizeof(leaderboard_container));
+	
+	leaderboard_container[0] = '\n'; 
 
+	for(int i = 1; i < 50; i++){
+	
+		leaderboard_container[i] = '=';
+	}
+
+	leaderboard_container[51] = '\0'; 
+	
+	strcat(leaderboard_interface, leaderboard_container);
+	
+	sprintf(leaderboard_container, "\n\nPlayer  - %s\nNumber of games won  - %d\nNumber of games played  - %d\n",client->clientName, client->games_won, client->games_played);
+	
+	strcat(leaderboard_interface, leaderboard_container);	
+
+	for(int i = 1; i < 50; i++){
+	
+		leaderboard_container[i] = '=';
+	}
+
+	leaderboard_container[51] = '\n'; 
+	
+	strcat(leaderboard_interface, leaderboard_container);
+	
+	write_socket(client->sfd, leaderboard_interface);
+	
+	
+
+}
 char* get_guess( Game *game, client_t* client){
 
 
@@ -130,16 +165,18 @@ char* get_guess( Game *game, client_t* client){
 	
 }
 
-
-bool client_( int sfd ){
-	client_t* client = malloc(sizeof(client_t));
-	client_node_t *client_list;
+//function to handle a client and their requests and game play
+bool client_( int sfd, client_t* client ){
+	
 	bool win = false;
 	int counter;
-
 	client->sfd = sfd;
-
+	
+	//to check if the client is new and needs to be authenticated
 	if (counter != 1){
+		//client_t* client = malloc(sizeof(client_t));
+		client_node_t *client_list;
+
 		memset(buf_rec, 0, sizeof(buf_rec));
 		memset(buf_snd, 0, sizeof(buf_snd));
 
@@ -158,6 +195,8 @@ bool client_( int sfd ){
 			return false;
 		}
 		counter = 1;
+		client->games_played = 0;
+		client->games_won = 0;
 		//insert_new_client(client);
 	}//end client info and authentication
 
@@ -168,10 +207,15 @@ bool client_( int sfd ){
 
 		case 1:
 			win = play_hangman(client);
+			if(win){
+				client->games_won += 1;
+			}
+			client->games_played += 1;
+		
 		break;
 
 		case 2:
-			//SHOW LEADERBOARD
+			show_leaderboard(client);
 		break;
 		case 3:	
 			//QUIT GAME	
@@ -185,12 +229,12 @@ bool play_hangman(client_t* client){
 
 	Game* game = malloc(sizeof(Game));
 	
-	char container[100];
+	char hangman_container[100];
 	static char *new_interface[BUF_SIZE];
 	char *letter = NULL; //char to retrive guess
 	game->completion_flag = 0;
 
-	//memset(letter, 0, sizeof(letter));
+	memset(hangman_container, 0, sizeof(hangman_container));
 	initialise_game(game);
 		
 	printf("--TESTS--\n");
@@ -206,28 +250,30 @@ bool play_hangman(client_t* client){
 	//Game loop
 	while(game->completion_flag == 0){
 
-		game->completion_flag = check_completion(game);
-		
+		//build new hangman interface
 		*new_interface = hangman_interface(game);
 		
 		//send HM interface
 		write_socket(client->sfd, *new_interface);
 		
 		letter = get_guess(game, client);
-		printf("selected letter = %s\n", letter);
 		
 		produce_encoded_text(game);
+	
+		game->completion_flag = check_completion(game);
 		
 	}
+
 	if(game->completion_flag == 2){
-		
-		sprintf(container, "\nGame over\n\n\nWell done %s! You won this round of Hangman!\n", client->clientName);	
-		write_socket(client->sfd, container);
-		
+		sprintf(hangman_container, "\nGame over\n\n\nWell done %s! You won this round of Hangman!\n", client->clientName);	
+		write_socket(client->sfd, hangman_container);
+
 		return true;
+
 	}else if(game->completion_flag == 1){
-				sprintf(container, "\nGame over\n\n\nBad Luck %s! You have run out of guesses. The Hangman got you!\n", client->clientName);	
-		write_socket(client->sfd, container);
+				sprintf(hangman_container, "\nGame over\n\n\nBad Luck %s! You have run out of guesses. The Hangman got you!\n", client->clientName);	
+
+		write_socket(client->sfd, hangman_container);
 		return false;
 	}
 
@@ -290,6 +336,7 @@ int main(int argc, char *argv[])
 {
 	int sfd, nfd;
 	addrinfo rp;
+	client_t* client = malloc(sizeof(client_t));
 
 	// Get port number for server to listen on, if not correct defalut is assigned
 	if (argc == 2) {
@@ -320,19 +367,11 @@ int main(int argc, char *argv[])
 		
 		do{
 
-			client_(nfd);
+			client_(nfd, client);
 		
 
 			
 		}while(clientConnection);
-
-		 //Receives a message from the new socket
-        	if (recv(nfd, buf_rec, BUF_SIZE, 0) == -1) {
-            		perror("receiving");
-            		exit(EXIT_FAILURE);
-        	}
-		
-		printf("%s\n", buf_rec);
 		
 		
 		close(nfd); 

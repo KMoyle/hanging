@@ -63,7 +63,6 @@ void initialise_game(Game *game){
 
 /* Given an instance of a game and a guessed letter, do required processing for a guess */
 void process_guess(Game *game, char *letter){
-	printf("Char is: %s\n", letter);
 	strcat(game->guessed_characters, letter);
 	game->guesses_remaining--;
 }
@@ -119,16 +118,14 @@ int check_completion(Game *game){
 	char container[100];
 	int flag = 0;
 	sprintf(container, "%s %s", game->game_words.word_a,game->game_words.word_b);
-	printf("container = %s\n", container);
-	printf("enocoded words = %s\n", game->encoded_words);
-	
+
 	if (strcmp(container, game->encoded_words) == 0){
 		flag = 2;
 		
 	}
 
 	// If remaining guess = 1 and flag != 2, set flag = 1 to indicate game has finished and player lost
-	if (game->guesses_remaining == 1 && flag != 2){
+	if (game->guesses_remaining == 0 && flag != 2){
 		flag = 1;
 	}
 	

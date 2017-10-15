@@ -35,6 +35,8 @@ struct client_details {
 	int sfd;
 	char clientName[6];
 	char clientPassword[6];
+	int games_played;
+	int games_won;
 };
 	
 struct node {
@@ -81,8 +83,9 @@ void insert_new_client( client_t* client );
 int get_client_name( client_t* client );
 int get_client_password( client_t* client );
 int get_menu_selection( client_t* client );
+void show_leaderboard(client_t* client);
 char* get_guess( Game *game, client_t* client);
 void input_client_info( client_t* client );
 bool authenticate_client( char *clientName, char *clientPassword );
-bool client_( int sfd );
+bool client_( int sfd, client_t* client );
 bool play_hangman( client_t* client);
