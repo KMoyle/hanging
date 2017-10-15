@@ -58,50 +58,60 @@ void initialise_game(Game *game){
 	pick_random_words(game);
 	game->guesses_allowed = calculate_num_guesses(game->game_words);
 	game->guesses_remaining = game->guesses_allowed;
-	produce_encoded_text(game, game->game_words);
+	produce_encoded_text(game);
 }
 
 /* Given an instance of a game and a guessed letter, do required processing for a guess */
 void process_guess(Game *game, char letter){
-
-	game->guessed_characters[guesses] = letter;
-	for(int i = 0; i < strlen(game->encoded_words); i++){
-		if(letter != game->encoded_words[i]){
-			printf("letter = %c\n", letter);
-			game->guesses_remaining--;
-		}
-	}
-
-	guesses++;
+	//strcat(game->guessed_characters, *letter);
+	game->guesses_remaining--;
 }
 
 
 /* Given an array of guessed letters and set of Words, return the updated encoded text i.e "_ _ _ _ _  _ _ _" */
-char produce_encoded_text(Game *game, Word plain_text){
+void produce_encoded_text(Game *game){
 
+	memset(game->encoded_words, 0, sizeof (game->encoded_words));
 
-	for(int i = 0; i < 20; i++){
-		for(int j = 0; j < strlen(plain_text.word_a); j++){
-			
-			if(game->guessed_characters[i] == plain_text.word_a[j]){
-
-				game->encoded_words[j] = game->guessed_characters[i];	
-			}else{ 
-				game->encoded_words[j] = '_';
-			}
-		}
-		for(int k = 0; k < strlen(plain_text.word_b); k++){
-
-			if(game->guessed_characters[i] == plain_text.word_b[k]){
-				
-				game->encoded_words[k] = game->guessed_characters[i];		
-			}else{ 
-				game->encoded_words[strlen(plain_text.word_a)+k] = '_';
-			}
-		}	
+	int i = 0;
+	for (;i < strlen(game->game_words.word_a); i++){	
+		game->encoded_words[i] = '_';
 	}
-	game->encoded_words[strlen(plain_text.word_a)+1] == ' ';
-	return *game->encoded_words;	
+	game->encoded_words[i] = ' '; 
+	i = strlen(game->game_words.word_a)+1;
+	for (;i < strlen(game->game_words.word_b) + strlen(game->game_words.word_a)+1; i++){	
+		game->encoded_words[i] = '_';
+	}
+
+	//printf("Game Words: %s %s\n", game->game_words.word_a, game->game_words.word_b);
+	//printf("Encoded Words: %s\n", game->encoded_words);
+
+	// Fill in guessed letters
+	strcpy( game->guessed_characters , "aeiou" );
+	
+	for(int i=0;i<strlen(game->game_words.word_a);i++){
+		for (int j = 0; j<strlen(game->guessed_characters); j++){
+			if(game->game_words.word_a[i] == game->guessed_characters[j]){	
+				game->encoded_words[i] = game->guessed_characters[j];
+			} 
+		}
+	}
+
+
+	for(int i=0;i<strlen(game->game_words.word_b);i++){
+		for (int j = 0; j<strlen(game->guessed_characters); j++){
+			if(game->game_words.word_b[i] == game->guessed_characters[j]){	
+				game->encoded_words[i + strlen(game->game_words.word_a) + 1] = game->guessed_characters[j];
+			} 
+		}
+	}
+
+	game->encoded_words[strlen(game->game_words.word_a) + strlen(game->game_words.word_b) + 1] = '\0';
+	
+	//printf("Encoded Words: %s\n", game->encoded_words);
+
+
+	while(1){}
 }
 
 

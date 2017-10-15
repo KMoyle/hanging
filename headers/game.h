@@ -22,7 +22,7 @@ typedef struct{
 	int guesses_allowed;
 	int guesses_remaining;
 	Word game_words;
-	char encoded_words[40];
+	char encoded_words[50];
 	char guessed_characters[26];
 	int completion_flag;
 }Game;	
@@ -33,9 +33,10 @@ int calculate_num_guesses(Word words);
 void pick_random_words(Game *game);
 void initialise_game(Game *game);
 void process_guess(Game *game, char letter);
-char produce_encoded_text(Game *game, Word words);
+void produce_encoded_text(Game *game);
 int check_completion(Game *game);
 void hangman_interface(Game *game, char *interface);
+bool is_letter_in_array(char letter, char *array);
 
 
 
