@@ -63,7 +63,8 @@ void initialise_game(Game *game){
 
 /* Given an instance of a game and a guessed letter, do required processing for a guess */
 void process_guess(Game *game, char letter){
-	//strcat(game->guessed_characters, *letter);
+	//printf("Char is: %s\n", letter);
+	//strcat(game->guessed_characters, letter);
 	game->guesses_remaining--;
 }
 
@@ -87,7 +88,7 @@ void produce_encoded_text(Game *game){
 	//printf("Encoded Words: %s\n", game->encoded_words);
 
 	// Fill in guessed letters
-	strcpy( game->guessed_characters , "aeiou" );
+	
 	
 	for(int i=0;i<strlen(game->game_words.word_a);i++){
 		for (int j = 0; j<strlen(game->guessed_characters); j++){
@@ -110,8 +111,6 @@ void produce_encoded_text(Game *game){
 	
 	//printf("Encoded Words: %s\n", game->encoded_words);
 
-
-	while(1){}
 }
 
 
