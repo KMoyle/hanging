@@ -81,6 +81,7 @@ void insert_new_client( client_t* client );
 int get_client_name( client_t* client );
 int get_client_password( client_t* client );
 int get_menu_selection( client_t* client );
+char* get_guess( Game *game, client_t* client);
 void input_client_info( client_t* client );
 bool authenticate_client( char *clientName, char *clientPassword );
 bool client_( int sfd );

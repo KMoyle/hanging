@@ -140,13 +140,18 @@ int check_completion(Game *game){
 
 void hangman_interface(Game *game, char *interface){
 
-	int divider = 30;
+	int divider = 31;
 	char container[100] = {0}; 
+	
+	container[0] = '\n'; 
 
-	for(int i = 0; i < divider; i++){
+	for(int i = 1; i < divider-1; i++){
 	
 		container[i] = '-';
 	}
+	
+	container[divider] = '\n'; 
+	
 	strcat(interface, container);
 
 	sprintf(container, "\n\nGuessed letters: %s\n", game->guessed_characters);
@@ -161,7 +166,7 @@ void hangman_interface(Game *game, char *interface){
 	
 	strcat(interface, container);
 
-	sprintf(container, "\nEnter your guess - ");
+	sprintf(container, "\nEnter your guess -  ");
 
 	strcat(interface, container);
 
