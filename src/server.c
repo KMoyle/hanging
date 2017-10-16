@@ -46,6 +46,7 @@ void insert_new_client(client_t* client ){
 	clients.tail = new_client;
 }*/
 
+/*Given the clients name and passowrd, checks the Authentication.txt for equivilent*/
 bool authenticate_client(char *clientName, char *clientPassword){
 	
 	
@@ -116,14 +117,19 @@ int get_menu_selection( client_t* client ){
 char* get_guess( Game *game, client_t* client){
 
 
-	if(read_socket(client->sfd, game->guessed_characters) == -1){
+	if(read_socket(client->sfd, game->guessed_character) == -1){
 		perror("cant read socket");		
 	}
 	
-	printf("selected letter = %s\n", game->guessed_characters);
-	return game->guessed_characters;	
+	printf("selected letter = %s\n", game->guessed_character);
+
+	//process guess and change guess count
+	process_guess(game, game->guessed_character);
+
+	return game->guessed_character;	
 	
 }
+
 
 bool client_( int sfd ){
 	client_t* client = malloc(sizeof(client_t));
@@ -174,8 +180,7 @@ bool client_( int sfd ){
 bool play_hangman(client_t* client){
 
 	Game* game = malloc(sizeof(Game));
-	int x;
-	char interface[BUF_SIZE];
+	static char *new_interface[BUF_SIZE];
 	char *letter = NULL; //char to retrive guess
 	game->completion_flag = 0;
 
@@ -196,14 +201,15 @@ bool play_hangman(client_t* client){
 	while(game->completion_flag == 0){
 
 		game->completion_flag = check_completion(game);
-		//printf("--we here--");
-		hangman_interface(game, interface);
+		
+		*new_interface = hangman_interface(game);
+		
 		//send HM interface
-		write_socket(client->sfd, interface);
+		write_socket(client->sfd, *new_interface);
 		letter = get_guess(game, client);
 		printf("selected letter = %s\n", letter);
-		//process guess and change guess count
-		process_guess(game, *letter);
+		
+		
 		//check to see if game is completed game.completion_flag = 1
 		//update interface correct guesses etc
 		//game.encoded_words = produce_encoded_text(game, game.game_words); 

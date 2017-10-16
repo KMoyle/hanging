@@ -62,9 +62,9 @@ void initialise_game(Game *game){
 }
 
 /* Given an instance of a game and a guessed letter, do required processing for a guess */
-void process_guess(Game *game, char letter){
-	//printf("Char is: %s\n", letter);
-	//strcat(game->guessed_characters, letter);
+void process_guess(Game *game, char *letter){
+	printf("Char is: %s\n", letter);
+	strcat(game->guessed_characters, letter);
 	game->guesses_remaining--;
 }
 
@@ -138,22 +138,25 @@ int check_completion(Game *game){
 	return flag;
 }
 
-void hangman_interface(Game *game, char *interface){
+char* hangman_interface(Game *game){
 
 	int divider = 31;
-	char container[100] = {0}; 
+	char container[100]; 
+	static char *interface;
 	
+
+	interface = (char *) malloc(BUF_SIZE);
 	container[0] = '\n'; 
 
 	for(int i = 1; i < divider-1; i++){
 	
 		container[i] = '-';
 	}
-	
+	puts("--we here--");
 	container[divider] = '\n'; 
 	
 	strcat(interface, container);
-
+	puts("--we here--");
 	sprintf(container, "\n\nGuessed letters: %s\n", game->guessed_characters);
 	
 	strcat(interface, container);
@@ -169,8 +172,10 @@ void hangman_interface(Game *game, char *interface){
 	sprintf(container, "\nEnter your guess -  ");
 
 	strcat(interface, container);
+	
+	return interface;
 
-	printf("%s\n", interface);
+	//printf("%s\n", interface);
 
 }
 
