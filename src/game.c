@@ -121,9 +121,10 @@ int check_completion(Game *game){
 	sprintf(container, "%s %s", game->game_words.word_a,game->game_words.word_b);
 	printf("container = %s\n", container);
 	printf("enocoded words = %s\n", game->encoded_words);
+	
 	if (strcmp(container, game->encoded_words) == 0){
 		flag = 2;
-
+		
 	}
 
 	// If remaining guess = 1 and flag != 2, set flag = 1 to indicate game has finished and player lost
@@ -165,11 +166,12 @@ char* hangman_interface(Game *game){
 	sprintf(container, "\nWord: %s\n", game->encoded_words);
 	
 	strcat(interface, container);
-
-	sprintf(container, "\nEnter your guess -  ");
-
-	strcat(interface, container);
 	
+	if(game->completion_flag == 0){
+
+		sprintf(container, "\nEnter your guess -  ");
+		strcat(interface, container);
+	}	
 	return interface;
 
 	//printf("%s\n", interface);

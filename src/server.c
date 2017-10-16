@@ -135,6 +135,7 @@ bool client_( int sfd ){
 	client_t* client = malloc(sizeof(client_t));
 	client_node_t *client_list;
 	bool win = false;
+	int counter = 0;
 
 	memset(buf_rec, 0, sizeof(buf_rec));
 	memset(buf_snd, 0, sizeof(buf_snd));
@@ -180,6 +181,8 @@ bool client_( int sfd ){
 bool play_hangman(client_t* client){
 
 	Game* game = malloc(sizeof(Game));
+	
+	char container[100];
 	static char *new_interface[BUF_SIZE];
 	char *letter = NULL; //char to retrive guess
 	game->completion_flag = 0;
@@ -206,14 +209,25 @@ bool play_hangman(client_t* client){
 		
 		//send HM interface
 		write_socket(client->sfd, *new_interface);
+		
 		letter = get_guess(game, client);
 		printf("selected letter = %s\n", letter);
+		
 		produce_encoded_text(game);
 		
-		//check to see if game is completed game.completion_flag = 1
-		//update interface correct guesses etc
-		//game.encoded_words = produce_encoded_text(game, game.game_words); 
 	}
+	if(game->completion_flag == 2){
+		
+		sprintf(container, "\nGame over\n\n\nWell done %s! You won this round of Hangman!\n", client->clientName);	
+		write_socket(client->sfd, container);
+		
+		return true;
+	}else if(game->completion_flag == 1){
+				sprintf(container, "\nGame over\n\n\nBad Luck %s! You have run out of guesses. The Hangman got you!\n", client->clientName);	
+		write_socket(client->sfd, container);
+		return false;
+	}
+
 }
 
 int passive_connection(addrinfo *rp, char *port){
