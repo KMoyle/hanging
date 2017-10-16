@@ -208,6 +208,7 @@ bool play_hangman(client_t* client){
 		write_socket(client->sfd, *new_interface);
 		letter = get_guess(game, client);
 		printf("selected letter = %s\n", letter);
+		produce_encoded_text(game);
 		
 		
 		//check to see if game is completed game.completion_flag = 1
