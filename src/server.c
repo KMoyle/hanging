@@ -210,7 +210,6 @@ bool play_hangman(client_t* client){
 		printf("selected letter = %s\n", letter);
 		produce_encoded_text(game);
 		
-		
 		//check to see if game is completed game.completion_flag = 1
 		//update interface correct guesses etc
 		//game.encoded_words = produce_encoded_text(game, game.game_words); 

@@ -116,17 +116,14 @@ void produce_encoded_text(Game *game){
 
 /* Given the current game object, check if all guesses are used or words are complete, set a flag to say game is finished */
 int check_completion(Game *game){
+	char container[100];
 	int flag = 0;
-	
-	// If encoded_text contains no underscores, set flag = 2 to indicate game has finished and player won 
-	for(int j = 0; j < strlen(game->encoded_words); j++){
-		if(game->encoded_words[j] == '_'){
-			counter++;
-		}
-	}
-	//if counter = 0 then correct word has been guessed an client wins
-	if(counter == 0){
-		flag = 2; //game one
+	sprintf(container, "%s %s", game->game_words.word_a,game->game_words.word_b);
+	printf("container = %s\n", container);
+	printf("enocoded words = %s\n", game->encoded_words);
+	if (strcmp(container, game->encoded_words) == 0){
+		flag = 2;
+
 	}
 
 	// If remaining guess = 1 and flag != 2, set flag = 1 to indicate game has finished and player lost
