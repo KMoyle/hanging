@@ -9,7 +9,7 @@
 char buf_rec[BUF_SIZE];
 char buf_snd[BUF_SIZE];
 char buf[BUF_SIZE];
-
+static bool server_running = true; 
 char *port;
 char clientPassword[6];
 char clientName[6];
@@ -131,7 +131,7 @@ void show_leaderboard(client_t* client){
 	
 	strcat(leaderboard_interface, leaderboard_container);
 	
-	sprintf(leaderboard_container, "\n\nPlayer  - %s\nNumber of games won  - %d\nNumber of games played  - %d\n",client->clientName, client->games_won, client->games_played);
+	sprintf(leaderboard_container, "\n\nPlayer  - %s\nNumber of games won  - %d\nNumber of games played  - %d\n\0",client->clientName, client->games_won, client->games_played);
 	
 	strcat(leaderboard_interface, leaderboard_container);	
 
@@ -140,7 +140,7 @@ void show_leaderboard(client_t* client){
 		leaderboard_container[i] = '=';
 	}
 
-	leaderboard_container[51] = '\n'; 
+	leaderboard_container[51] = '\0'; 
 	
 	strcat(leaderboard_interface, leaderboard_container);
 	
@@ -218,7 +218,7 @@ bool client_( int sfd, client_t* client ){
 			show_leaderboard(client);
 		break;
 		case 3:	
-			//QUIT GAME	
+			// Close client connection cleanly	
 		break;
 	}
 	
@@ -237,15 +237,7 @@ bool play_hangman(client_t* client){
 	memset(hangman_container, 0, sizeof(hangman_container));
 	initialise_game(game);
 		
-	printf("--TESTS--\n");
-	printf("Clients Words: %s %s\n", game->game_words.word_a, game->game_words.word_b);
-	printf("Clients Encoded Words: %s\n", game->encoded_words);
-	printf("Clients Guesses Allowed: %d\n", game->guesses_allowed);
-	printf("Clients Guesses Remaining: %d\n", game->guesses_remaining);
-	printf("Clients Guessed Characters: %s\n", game->guessed_characters);
-	printf("Clients Completion Flag: %d\n", game->completion_flag);
-	printf("--TESTS--");
-	//while(1){}//Pause
+	printf("Clients Words: %s %s\n\0", game->game_words.word_a, game->game_words.word_b);
 
 	//Game loop
 	while(game->completion_flag == 0){
@@ -331,12 +323,21 @@ int passive_connection(addrinfo *rp, char *port){
 }
 
 
+void sigintHandler(int sig_num) {
+	// Exit Gracefully
+	server_running = false;
+	close(pfd);
+	exit(EXIT_SUCCESS);
+}
+
 	
 int main(int argc, char *argv[])
 {
 	int sfd, nfd;
 	addrinfo rp;
 	client_t* client = malloc(sizeof(client_t));
+
+	signal(SIGINT, sigintHandler);
 
 	// Get port number for server to listen on, if not correct defalut is assigned
 	if (argc == 2) {
@@ -352,7 +353,7 @@ int main(int argc, char *argv[])
 
 	read_hangman_list();
 
-	for(;;){  /* main accept() loop */
+	while(server_running){  /* main accept() loop */
 		
 		//accepts a new connection
 		if ((nfd = accept(pfd, rp.ai_addr, &rp.ai_addrlen)) == -1) {
@@ -371,7 +372,7 @@ int main(int argc, char *argv[])
 		
 
 			
-		}while(clientConnection);
+		}while(clientConnection && server_running);
 		
 		
 		close(nfd); 
