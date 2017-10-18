@@ -41,7 +41,7 @@ player* add_to_leaderboard(char *clientname, Leaderboard *l){
 }
 
 //will update a users score after an instance of hangman
-void update_scores(Leaderboard* l, player* p){
+void update_scores(Leaderboard* l, ){
 
 	// checks for a win, compare names and updates 
 	// compare names and update accordingly 
@@ -86,7 +86,7 @@ char* return_leaderboard(leaderboard *l){
 	return leaderboard_interface;
 
 }
-
+//arrange the players due to scores
 void arrange_leaderboard(Leaderboard* l){
 
 	//logic to sort leaderboard
