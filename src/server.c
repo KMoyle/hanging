@@ -36,12 +36,6 @@ void write_socket( int sfd, const char *buf_snd )
 	exit(1);
     }
 }
-/*
-void insert_new_client(client_node_t* client_list, client_t* client ){
-	
-	client_list = malloc(sizeof(struct node));
-	
-}*/
 
 /*Given the clients name and passowrd, checks the Authentication.txt for equivilent*/
 bool authenticate_client(char *clientName, char *clientPassword){

@@ -27,13 +27,16 @@ typedef struct {
 typedef struct {
 	
 	int active_users;
+	player *first;
+	player *last;
 
 }Leaderboard;
 
 
-leaderboard* leaderboard();
-void add_leaderboard(player* p);
+Leaderboard* leaderboard(void);
+player* add_leaderboard(char *clientname, Leaderboard *l);
 void update_leaderboard(Leaderboard* l, player* p);
 void update_scores(Leaderboard* l, player* p)
 char* return_leaderboard(Leaderboard* l);
+void arrange_leaderboard(Leaderboard* l);
 
