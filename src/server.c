@@ -173,7 +173,7 @@ int play_hangman(client_t* client){
 	memset(hangman_container, 0, sizeof(hangman_container));
 	initialise_game(game);
 		
-	printf("Clients Words: %s %s\n\0", game->game_words.word_a, game->game_words.word_b);
+	//printf("Clients Words: %s %s\n\0", game->game_words.word_a, game->game_words.word_b);
 
 	//Game loop
 	while(game->completion_flag == 0){

@@ -43,7 +43,7 @@ player* add_to_leaderboard(char *clientname, Leaderboard *l){
 	new_player->games_played = 0;
 
 	if(l != NULL){
-		new_player->next = l->first;
+		//new_player->next = l->first;
 		l->first = new_player;
 	}else{
 		new_player->next = NULL;
@@ -95,7 +95,7 @@ char* get_interface(Leaderboard* l, char *clientname, int games_played, int game
 
 	strcat(leaderboard_interface,LEADERBOARD_DIVIDER);
 	
-	sprintf(leaderboard_container, "\nPlayer  - %s\nNumber of games won  - %d\nNumber of games played  - %d\n\0",clientname, games_won, games_played);
+	sprintf(leaderboard_container, "\nPlayer  - %s\nNumber of games won  - %d\nNumber of games played  - %d\n",clientname, games_won, games_played);
 
 	strcat(leaderboard_interface, leaderboard_container);  
 
