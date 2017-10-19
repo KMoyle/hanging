@@ -10,22 +10,18 @@ int main(int argc, char *argv[]){
 
 
 	if (pthread_create(&send_thread, NULL, send_data, (void *) &socket_identifier) != 0) {
-        	perror("pthread_create");
         	close(EXIT_FAILURE);
    	}
 
 	if (pthread_create(&recieve_thread, NULL, recieve_data, (void *) &socket_identifier) != 0) {
-        	perror("pthread_create");
         	close(EXIT_FAILURE);
     	}
 
    	if (pthread_join(send_thread, NULL) != 0) {
-        	perror("pthread_join");
         	close(EXIT_FAILURE);
 	}
 
 	if (pthread_join(recieve_thread, NULL) != 0) {
-        	perror("pthread_join");
         	close(EXIT_FAILURE);
 	}
 
@@ -39,7 +35,7 @@ int main(int argc, char *argv[]){
 
 void check_inputs(int argc){
 	if (argc != 3) {
-        	printf("Usage: ./client <hostname> <port>\n");
+        	printf("Please enter: ./client <hostname> <port>\n");
         	close(EXIT_FAILURE);
 	}
 }
@@ -130,16 +126,14 @@ static void *recieve_data(void *data)
     char    recieved_buffer[BUFFER_LENGTH];
 
     socket_identifier = (int *) data;
-    for (;;) {
+    while (1) {
         if (read(*socket_identifier, recieved_buffer, BUFFER_LENGTH) == -1) {
-	    perror("read");
             exit(EXIT_FAILURE);
         }
 
         if (strcmp(recieved_buffer, DISCONNECT_FLAG) == 0) {
             printf("\nServer has disconnected\n");
             close_client = true;
-            pthread_exit(NULL);
         }
 
         printf("%s", recieved_buffer);
