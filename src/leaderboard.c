@@ -1,5 +1,7 @@
 #include "leaderboard.h"
 
+const char *LEADERBOARD_DIVIDER = "\n===================================================\n";
+
 // initialises leaderboard structure
 Leaderboard* leaderboard(){
 
@@ -11,7 +13,7 @@ Leaderboard* leaderboard(){
 
 	return l;
 }
-//th is function retrives the players score, used to update the scoreboard
+//this function retrives the players score, used to update the scoreboard, multiple clients
 player* get_users_score(char *clientname, Leaderboard *l){
 
 	player *players_score = l->first;
@@ -26,7 +28,7 @@ player* get_users_score(char *clientname, Leaderboard *l){
 
 }
 
-//add you player to leaderboard
+//add you player to leaderboard, multiple clients
 player* add_to_leaderboard(char *clientname, Leaderboard *l){
 	
 	//have an instance of player and add them to the leaderboard  
@@ -86,26 +88,20 @@ void arrange_leaderboard(Leaderboard* l){
 char* get_interface(Leaderboard* l, char *clientname, int games_played, int games_won){
 	
 	char leaderboard_container[BUFFER_SIZE];
+
 	char *leaderboard_interface = (char *) malloc(BUFFER_SIZE);
 	
 	memset(leaderboard_container, 0, sizeof(leaderboard_container));
 
+	strcat(leaderboard_interface,LEADERBOARD_DIVIDER);
 	
-	leaderboard_container[0] = '\n'; 
-	
-	for(int i = 1; i < 50; i++){
-	
-		leaderboard_container[i] = '=';
-	}
+	sprintf(leaderboard_container, "\nPlayer  - %s\nNumber of games won  - %d\nNumber of games played  - %d\n\0",clientname, games_won, games_played);
 
-	leaderboard_container[51] = '\0'; 
-	
-	
-	sprintf(leaderboard_interface, "\n\nPlayer  - %s\nNumber of games won  - %d\nNumber of games played  - %d\n\n\n\0",clientname, games_won, games_played);
+	strcat(leaderboard_interface, leaderboard_container);  
 
-	strcat(leaderboard_container,leaderboard_interface);
+	strcat(leaderboard_interface,LEADERBOARD_DIVIDER);
+	//strcat(leaderboard_interface,leaderboard_container);
 
-
-
+	return leaderboard_interface;
 	
 }
