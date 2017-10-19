@@ -6,9 +6,9 @@
 
 #include "server.h"
 
-char buf_rec[BUF_SIZE];
-char buf_snd[BUF_SIZE];
-char buf[BUF_SIZE];
+char buf_rec[BUFFER_SIZE];
+char buf_snd[BUFFER_SIZE];
+char buf[BUFFER_SIZE];
 bool server_running = true; 
 Leaderboard *leaderboard_obj;
 char *port;
@@ -37,7 +37,6 @@ void write_socket( int sfd, const char *buf_snd ){
 /*Given the clients name and passowrd, checks the Authentication.txt for equivilent*/
 bool authenticate_client(char *clientName, char *clientPassword){
 	
-	
 	FILE *fp;
 	char auth_username[6];
 	char auth_password[6];
@@ -59,7 +58,6 @@ bool authenticate_client(char *clientName, char *clientPassword){
 	fclose(fp);
 	return false; 
 
-
 }
 
 void get_client_name(client_t* client){
@@ -79,7 +77,7 @@ void get_client_password(client_t* client){
 
 int get_menu_selection( client_t* client ){
 	
-	char menu_selection[BUF_SIZE];
+	char menu_selection[BUFFER_SIZE];
 
 	memset(menu_selection, 0, sizeof(menu_selection));
 	
@@ -149,7 +147,7 @@ bool client_( int sfd, client_t* client ){
 
 	}else if(menu_selection == 2){
 			
-		return_leaderboard(leaderboard_obj, client->sfd);
+		return_leaderboard(leaderboard_obj, client);
 		
 	}else if(menu_selection == 3){
 
@@ -210,44 +208,13 @@ bool play_hangman(client_t* client){
 }
 
 // this function packages up the leaderboard and returns for writing
-void return_leaderboard(Leaderboard *l, int socket_no){
+void return_leaderboard(Leaderboard *l, client_t* client){
 
-	char leaderboard_container[60];
-	char *leaderboard_interface = (char *) malloc(BUFFER_SIZE);
-	
-	player *current_player;
+	static char *leaderboard_interface[BUFFER_SIZE];
 
-	current_player = malloc(sizeof(player));
+	*leaderboard_interface = get_interface(l, client->clientName);
 
-	memset(leaderboard_container, 0, sizeof(leaderboard_container));
-	
-	current_player = l->first;
-	
-	leaderboard_container[0] = '\n'; 
-
-	for(int i = 1; i < 50; i++){
-	
-		leaderboard_container[i] = '=';
-	}
-
-	leaderboard_container[51] = '\0'; 
-	
-	strcat(leaderboard_interface, leaderboard_container);
-	
-	sprintf(leaderboard_container, "\n\nPlayer  - %s\nNumber of games won  - %d\nNumber of games played  - %d\n\0",current_player->name, current_player->games_won, current_player->games_played);
-	
-	strcat(leaderboard_interface, leaderboard_container);	
-
-	for(int i = 1; i < 50; i++){
-	
-		leaderboard_container[i] = '=';
-	}
-
-	leaderboard_container[51] = '\0'; 
-	
-	strcat(leaderboard_interface, leaderboard_container);
-
-	write_socket(socket_no, leaderboard_interface);
+	write_socket(client->sfd, *leaderboard_interface);
 }
 
 
@@ -354,7 +321,6 @@ int main(int argc, char *argv[])
 		
 		close(nfd); 
 
-		while(waitpid(-1,NULL,WNOHANG) > 0); /* clean up child processes */
 	}
 
 }
