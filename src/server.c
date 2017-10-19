@@ -103,7 +103,7 @@ char* get_guess( Game *game, client_t* client){
 }
 
 //function to handle a client and their requests and game play
-bool client_( int sfd, client_t* client ){
+void client_( int sfd, client_t* client ){
 	
 	bool win = false;
 	int counter;
@@ -128,7 +128,6 @@ bool client_( int sfd, client_t* client ){
 			printf("AUTH FAILED");
 			write_socket(client->sfd, UNAUTH);
 		
-			return false;
 		}
 		counter = 1;
 
@@ -156,9 +155,7 @@ bool client_( int sfd, client_t* client ){
 		//needs to quit
 	}else{
 		//incorrect selection try again
-	}
-	
-	return true;	 
+	}	 
 	
 }
 int play_hangman(client_t* client){
