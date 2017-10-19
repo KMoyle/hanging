@@ -84,7 +84,7 @@ void arrange_leaderboard(Leaderboard* l){
 
 char* get_interface(Leaderboard* l, char *clientname){
 	
-	char leaderboard_container[60];
+	char leaderboard_container[BUFFER_SIZE];
 	char *leaderboard_interface = (char *) malloc(BUFFER_SIZE);
 	
 	player *current_player;
@@ -92,11 +92,11 @@ char* get_interface(Leaderboard* l, char *clientname){
 	current_player = malloc(sizeof(player));
 
 	memset(leaderboard_container, 0, sizeof(leaderboard_container));
+	//while(1){}
+	//current_player = l->first;
 	
-	current_player = l->first;
-
 	leaderboard_container[0] = '\n'; 
-
+	
 	for(int i = 1; i < 50; i++){
 	
 		leaderboard_container[i] = '=';
@@ -105,8 +105,8 @@ char* get_interface(Leaderboard* l, char *clientname){
 	leaderboard_container[51] = '\0'; 
 	
 	strcat(leaderboard_interface, leaderboard_container);
-	while(1){}
-
+	
+	
 	sprintf(leaderboard_container, "\n\nPlayer  - %s\nNumber of games won  - %d\nNumber of games played  - %d\n\0",current_player->name, current_player->games_won, current_player->games_played);
 	
 	strcat(leaderboard_interface, leaderboard_container);	
