@@ -10,6 +10,7 @@ char buf_rec[BUF_SIZE];
 char buf_snd[BUF_SIZE];
 char buf[BUF_SIZE];
 static bool server_running = true; 
+Leaderboard *leaderboard;
 char *port;
 char clientPassword[6];
 char clientName[6];
@@ -23,7 +24,6 @@ int read_socket( int sfd, char *buf_rec ){
 	//Receives a message from sfd
         if (recv(sfd, buf_rec, BUF_SIZE, 0) == -1) {
             	perror("receiving input");
-            	exit(1);
         	}
 	return 0;
 }
@@ -33,7 +33,6 @@ void write_socket( int sfd, const char *buf_snd )
 
     if (send(sfd, buf_snd, BUF_SIZE, 0) == -1) {
         perror("writing output");
-	exit(1);
     }
 }
 
@@ -104,42 +103,7 @@ int get_menu_selection( client_t* client ){
 	return atoi(menu_selection);	
 	
 }
-void show_leaderboard(client_t* client){
-	
-	char leaderboard_container[60];
-	static char *leaderboard_interface;
-	leaderboard_interface = (char *) malloc(BUF_SIZE);
-	memset(leaderboard_container, 0, sizeof(leaderboard_container));
-	
-	leaderboard_container[0] = '\n'; 
 
-	for(int i = 1; i < 50; i++){
-	
-		leaderboard_container[i] = '=';
-	}
-
-	leaderboard_container[51] = '\0'; 
-	
-	strcat(leaderboard_interface, leaderboard_container);
-	
-	sprintf(leaderboard_container, "\n\nPlayer  - %s\nNumber of games won  - %d\nNumber of games played  - %d\n\0",client->clientName, client->games_won, client->games_played);
-	
-	strcat(leaderboard_interface, leaderboard_container);	
-
-	for(int i = 1; i < 50; i++){
-	
-		leaderboard_container[i] = '=';
-	}
-
-	leaderboard_container[51] = '\0'; 
-	
-	strcat(leaderboard_interface, leaderboard_container);
-	
-	write_socket(client->sfd, leaderboard_interface);
-	
-	
-
-}
 char* get_guess( Game *game, client_t* client){
 
 
@@ -165,7 +129,6 @@ bool client_( int sfd, client_t* client ){
 	
 	//to check if the client is new and needs to be authenticated
 	if (counter != 1){
-		client_node_t* client_list = malloc(sizeof(client_node_t));
 
 		memset(buf_rec, 0, sizeof(buf_rec));
 		memset(buf_snd, 0, sizeof(buf_snd));
@@ -185,31 +148,29 @@ bool client_( int sfd, client_t* client ){
 			return false;
 		}
 		counter = 1;
-		client->games_played = 0;
-		client->games_won = 0;
-		//insert_new_client(client_list, client);
+
 	}//end client info and authentication
 
 	int menu_selection = get_menu_selection(client);
 	printf("menu_selection %d\n",menu_selection);
 
-	switch(menu_selection){
+	if(menu_selection == 1){
 
-		case 1:
-			win = play_hangman(client);
-			if(win){
-				client->games_won += 1;
-			}
-			client->games_played += 1;
+		win = play_hangman(client);
 		
-		break;
+		if(win){
+			update_scores();
+		}
 
-		case 2:
-			show_leaderboard(client);
-		break;
-		case 3:	
-			// Close client connection cleanly	
-		break;
+	}else if(menu_selection == 2){
+			
+		show_leaderboard(client);
+		
+	}else if(menu_selection == 3){
+
+		//needs to quit
+	}else{
+		//incorrect selection try again
 	}
 	
 	return true;	 
@@ -218,6 +179,9 @@ bool client_( int sfd, client_t* client ){
 bool play_hangman(client_t* client){
 
 	Game* game = malloc(sizeof(Game));
+	
+
+	leaderboard = leaderboard();
 	
 	char hangman_container[100];
 	static char *new_interface[BUF_SIZE];
@@ -253,7 +217,7 @@ bool play_hangman(client_t* client){
 		return true;
 
 	}else if(game->completion_flag == 1){
-				sprintf(hangman_container, "\nGame over\n\n\nBad Luck %s! You have run out of guesses. The Hangman got you!\n", client->clientName);	
+		sprintf(hangman_container, "\nGame over\n\n\nBad Luck %s! You have run out of guesses. The Hangman got you!\n", client->clientName);	
 
 		write_socket(client->sfd, hangman_container);
 		return false;
@@ -357,11 +321,8 @@ int main(int argc, char *argv[])
 		printf("Sending Welcome Message\n\n");
 		
 		do{
-
 			client_(nfd, client);
 		
-
-			
 		}while(clientConnection && server_running);
 		
 		

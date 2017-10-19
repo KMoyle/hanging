@@ -34,8 +34,8 @@ typedef struct {
 
 
 Leaderboard* leaderboard(void);
-player* add_leaderboard(char *clientname, Leaderboard *l);
-void update_leaderboard(Leaderboard* l, player* p);
+player* get_users_score(char *clientname, Leaderboard *l);
+player* add_to_leaderboard(char *clientname, Leaderboard *l);
 void update_scores(Leaderboard* l, player* p)
 char* return_leaderboard(Leaderboard* l);
 void arrange_leaderboard(Leaderboard* l);
