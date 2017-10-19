@@ -9,31 +9,29 @@
 char buf_rec[BUF_SIZE];
 char buf_snd[BUF_SIZE];
 char buf[BUF_SIZE];
-static bool server_running = true; 
-Leaderboard *leaderboard;
+bool server_running = true; 
+Leaderboard *leaderboard_obj;
 char *port;
 char clientPassword[6];
 char clientName[6];
 bool clientConnection = false;
+int new_player;	
 
 int pfd; //passive socket
 int sfd;
 
-int read_socket( int sfd, char *buf_rec ){
-	
+void read_socket( int sfd, char *buf_rec ){
 	//Receives a message from sfd
         if (recv(sfd, buf_rec, BUF_SIZE, 0) == -1) {
             	perror("receiving input");
-        	}
-	return 0;
+        }
 }
 
-void write_socket( int sfd, const char *buf_snd )
-{
+void write_socket( int sfd, const char *buf_snd ){
 
-    if (send(sfd, buf_snd, BUF_SIZE, 0) == -1) {
-        perror("writing output");
-    }
+	if (send(sfd, buf_snd, BUF_SIZE, 0) == -1) {
+        	perror("writing output");
+	}
 }
 
 /*Given the clients name and passowrd, checks the Authentication.txt for equivilent*/
@@ -64,27 +62,19 @@ bool authenticate_client(char *clientName, char *clientPassword){
 
 }
 
-int get_client_name(client_t* client){
+void get_client_name(client_t* client){
 	
 	write_socket(client->sfd, USERNAME);
 
-	if(read_socket(client->sfd, client->clientName) == -1){
-		perror("cant read socket");
-		return -1;
-	}
-	
-	return 0;
+	read_socket(client->sfd, client->clientName);
+
 }
-int get_client_password(client_t* client){
+void get_client_password(client_t* client){
 	
 	write_socket(client->sfd, PASSWORD);
 
-	if(read_socket(client->sfd,client->clientPassword) == -1){
-		perror("cant read socket");
-		return -1;
-	}
+	read_socket(client->sfd, client->clientPassword);
 	
-	return 0;
 }
 
 int get_menu_selection( client_t* client ){
@@ -95,22 +85,16 @@ int get_menu_selection( client_t* client ){
 	
 	write_socket(client->sfd, MAIN_MENU);
 	
-	if(read_socket(client->sfd, menu_selection) == -1){
-		perror("cant read socket");
-		return -1;
-	}
-	
+	read_socket(client->sfd, menu_selection);
+
 	return atoi(menu_selection);	
 	
 }
 
 char* get_guess( Game *game, client_t* client){
 
+	read_socket(client->sfd, game->guessed_character);
 
-	if(read_socket(client->sfd, game->guessed_character) == -1){
-		perror("cant read socket");		
-	}
-	
 	printf("selected letter = %s\n", game->guessed_character);
 
 	//process guess and change guess count
@@ -126,6 +110,7 @@ bool client_( int sfd, client_t* client ){
 	bool win = false;
 	int counter;
 	client->sfd = sfd;
+	char* leaderboard_interface[BUFFER_SIZE];
 	
 	//to check if the client is new and needs to be authenticated
 	if (counter != 1){
@@ -159,12 +144,12 @@ bool client_( int sfd, client_t* client ){
 		win = play_hangman(client);
 		
 		if(win){
-			update_scores();
+			update_scores(leaderboard_obj, client->clientName, new_player);
 		}
 
 	}else if(menu_selection == 2){
 			
-		show_leaderboard(client);
+		return_leaderboard(leaderboard_obj, client->sfd);
 		
 	}else if(menu_selection == 3){
 
@@ -179,9 +164,8 @@ bool client_( int sfd, client_t* client ){
 bool play_hangman(client_t* client){
 
 	Game* game = malloc(sizeof(Game));
-	
 
-	leaderboard = leaderboard();
+	leaderboard_obj = leaderboard();
 	
 	char hangman_container[100];
 	static char *new_interface[BUF_SIZE];
@@ -224,6 +208,48 @@ bool play_hangman(client_t* client){
 	}
 
 }
+
+// this function packages up the leaderboard and returns for writing
+void return_leaderboard(Leaderboard *l, int socket_no){
+
+	char leaderboard_container[60];
+	char *leaderboard_interface = (char *) malloc(BUFFER_SIZE);
+	
+	player *current_player;
+
+	current_player = malloc(sizeof(player));
+
+	memset(leaderboard_container, 0, sizeof(leaderboard_container));
+	
+	current_player = l->first;
+	
+	leaderboard_container[0] = '\n'; 
+
+	for(int i = 1; i < 50; i++){
+	
+		leaderboard_container[i] = '=';
+	}
+
+	leaderboard_container[51] = '\0'; 
+	
+	strcat(leaderboard_interface, leaderboard_container);
+	
+	sprintf(leaderboard_container, "\n\nPlayer  - %s\nNumber of games won  - %d\nNumber of games played  - %d\n\0",current_player->name, current_player->games_won, current_player->games_played);
+	
+	strcat(leaderboard_interface, leaderboard_container);	
+
+	for(int i = 1; i < 50; i++){
+	
+		leaderboard_container[i] = '=';
+	}
+
+	leaderboard_container[51] = '\0'; 
+	
+	strcat(leaderboard_interface, leaderboard_container);
+
+	write_socket(socket_no, leaderboard_interface);
+}
+
 
 int passive_connection(addrinfo *rp, char *port){
 	

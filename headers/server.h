@@ -32,6 +32,7 @@ typedef struct addrinfo addrinfo;
 typedef struct client_details client_t;
 
 struct client_details {
+
 	int sfd;
 	char clientName[6];
 	char clientPassword[6];
@@ -66,13 +67,14 @@ const char *MAIN_MENU = "\n"
 			"\n"
 			"Selection option 1-3 ->";
 int passive_connection( addrinfo *rp, char *port);
-int read_socket( int sfd, char *buf_rec );
+void read_socket( int sfd, char *buf_rec );
 void write_socket( int sfd, const char *buf_snd );
-int get_client_name( client_t* client );
-int get_client_password( client_t* client );
+void get_client_name( client_t* client );
+void get_client_password( client_t* client );
 int get_menu_selection( client_t* client );
 char* get_guess( Game *game, client_t* client);
 void input_client_info( client_t* client );
 bool authenticate_client( char *clientName, char *clientPassword );
 bool client_( int sfd, client_t* client );
+void return_leaderboard(Leaderboard* l, int socket_no);
 bool play_hangman( client_t* client);
