@@ -79,4 +79,4 @@ char* get_guess( Game *game, client_t* client);
 bool authenticate_client( char *clientName, char *clientPassword );
 bool client_( int sfd, client_t* client );
 void return_leaderboard(Leaderboard* l, client_t* client);
-bool play_hangman( client_t* client);
+int play_hangman( client_t* client);

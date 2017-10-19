@@ -142,7 +142,7 @@ bool client_( int sfd, client_t* client ){
 	
 		win = play_hangman(client);
 		
-		if(win){
+		if(win == 1){
 			client->games_won++;
 			//update_scores(leaderboard_obj, client->clientName, client->games_played, client->games_won);
 		}
@@ -161,7 +161,7 @@ bool client_( int sfd, client_t* client ){
 	return true;	 
 	
 }
-bool play_hangman(client_t* client){
+int play_hangman(client_t* client){
 
 	Game* game = malloc(sizeof(Game));
 
@@ -171,6 +171,7 @@ bool play_hangman(client_t* client){
 	static char *new_interface[BUF_SIZE];
 	char *letter = NULL; //char to retrive guess
 	game->completion_flag = 0;
+	strcpy(game->guessed_characters, "");
 
 	memset(hangman_container, 0, sizeof(hangman_container));
 	initialise_game(game);
@@ -198,13 +199,13 @@ bool play_hangman(client_t* client){
 		sprintf(hangman_container, "\nGame over\n\n\nWell done %s! You won this round of Hangman!\n", client->clientName);	
 		write_socket(client->sfd, hangman_container);
 
-		return true;
+		return 1;
 
 	}else if(game->completion_flag == 1){
 		sprintf(hangman_container, "\nGame over\n\n\nBad Luck %s! You have run out of guesses. The Hangman got you!\n", client->clientName);	
 
 		write_socket(client->sfd, hangman_container);
-		return false;
+		return 0;
 	}
 
 }
