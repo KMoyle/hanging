@@ -99,12 +99,22 @@ char* get_interface(Leaderboard* l, char *clientname, int games_played, int game
 	}
 
 	leaderboard_container[51] = '\0'; 
+	strcat(leaderboard_interface, leaderboard_container);
 	
 	
 	sprintf(leaderboard_interface, "\n\nPlayer  - %s\nNumber of games won  - %d\nNumber of games played  - %d\n\n\n\0",clientname, games_won, games_played);
 
 
-	strcat(leaderboard_container,leaderboard_interface);
+	strcat(leaderboard_interface, leaderboard_container);
+
+	for(int i = 1; i < 50; i++){
+	
+		leaderboard_container[i] = '=';
+	}
+
+	leaderboard_container[51] = '\0'; 
+	strcat(leaderboard_interface, leaderboard_container);
+	
 
 	
 }
