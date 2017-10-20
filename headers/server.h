@@ -36,6 +36,8 @@ struct client_details {
 	int sfd;
 	char clientName[6];
 	char clientPassword[6];
+	int games_played;
+	int games_won;
 
 };
 	

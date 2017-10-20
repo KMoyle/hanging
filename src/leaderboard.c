@@ -55,21 +55,21 @@ player* add_to_leaderboard(char *clientname, Leaderboard *l){
 }
 
 //will update a users score after an instance of hangman
-void update_scores(Leaderboard* l, char *clientname, int new_player ){
+void update_scores(Leaderboard* l, char *clientname, int games_played, int games_won){
 
 	// checks for a win, compare names and updates 
 	// compare names and update accordingly 
 	
 	player *p;
 
-	if(new_player == 1){
+	if(games_played > 1){
 		p = get_users_score(clientname, l);
 	}else{
 		p = add_to_leaderboard(clientname, l);
 	}
 
-	p->games_played += 1;
-	p->games_won +=1;
+	p->games_played = games_played;
+	p->games_won = games_won;
 
 }
 

@@ -138,11 +138,13 @@ bool client_( int sfd, client_t* client ){
 	printf("menu_selection %d\n",menu_selection);
 
 	if(menu_selection == 1){
-
+		client->games_played++;
+	
 		win = play_hangman(client);
 		
 		if(win){
-			update_scores(leaderboard_obj, client->clientName, new_player);
+			client->games_won++;
+			update_scores(leaderboard_obj, client->clientName, client->games_played, client->games_won);
 		}
 
 	}else if(menu_selection == 2){
@@ -283,6 +285,8 @@ int main(int argc, char *argv[])
 	int sfd, nfd;
 	addrinfo rp;
 	client_t* client = malloc(sizeof(client_t));
+	client->games_played = 0;
+	client->games_won = 0;
 
 	signal(SIGINT, sigintHandler);
 
