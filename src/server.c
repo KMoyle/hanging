@@ -171,6 +171,7 @@ bool play_hangman(client_t* client){
 	static char *new_interface[BUF_SIZE];
 	char *letter = NULL; //char to retrive guess
 	game->completion_flag = 0;
+	strcpy(game->guessed_characters, "");
 
 	memset(hangman_container, 0, sizeof(hangman_container));
 	initialise_game(game);
