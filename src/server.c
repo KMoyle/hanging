@@ -93,7 +93,7 @@ char* get_guess( Game *game, client_t* client){
 
 	read_socket(client->sfd, game->guessed_character);
 
-	printf("selected letter = %s\n", game->guessed_character);
+	printf("Clients Guess: = %s\n", game->guessed_character);
 
 	//process guess and change guess count
 	process_guess(game, game->guessed_character);
@@ -173,7 +173,7 @@ int play_hangman(client_t* client){
 	memset(hangman_container, 0, sizeof(hangman_container));
 	initialise_game(game);
 		
-	//printf("Clients Words: %s %s\n\0", game->game_words.word_a, game->game_words.word_b);
+	printf("Clients Words: %s %s\n\0", game->game_words.word_a, game->game_words.word_b);
 
 	//Game loop
 	while(game->completion_flag == 0){
