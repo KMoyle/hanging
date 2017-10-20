@@ -72,7 +72,8 @@ void process_guess(Game *game, char *letter){
 void produce_encoded_text(Game *game){
 
 	memset(game->encoded_words, 0, sizeof (game->encoded_words));
-
+	
+	// Create empty words
 	int i = 0;
 	for (;i < strlen(game->game_words.word_a); i++){	
 		game->encoded_words[i] = '_';
@@ -82,13 +83,9 @@ void produce_encoded_text(Game *game){
 	for (;i < strlen(game->game_words.word_b) + strlen(game->game_words.word_a)+1; i++){	
 		game->encoded_words[i] = '_';
 	}
-
-	//printf("Game Words: %s %s\n", game->game_words.word_a, game->game_words.word_b);
-	//printf("Encoded Words: %s\n", game->encoded_words);
-
-	// Fill in guessed letters
 	
 	
+	// Fill in word a's guessed letters
 	for(int i=0;i<strlen(game->game_words.word_a);i++){
 		for (int j = 0; j<strlen(game->guessed_characters); j++){
 			if(game->game_words.word_a[i] == game->guessed_characters[j]){	
@@ -97,7 +94,7 @@ void produce_encoded_text(Game *game){
 		}
 	}
 
-
+	// Fill in word b's guessed letters
 	for(int i=0;i<strlen(game->game_words.word_b);i++){
 		for (int j = 0; j<strlen(game->guessed_characters); j++){
 			if(game->game_words.word_b[i] == game->guessed_characters[j]){	
@@ -107,8 +104,6 @@ void produce_encoded_text(Game *game){
 	}
 
 	game->encoded_words[strlen(game->game_words.word_a) + strlen(game->game_words.word_b) + 1] = '\0';
-	
-	//printf("Encoded Words: %s\n", game->encoded_words);
 
 }
 
@@ -133,6 +128,8 @@ int check_completion(Game *game){
 	return flag;
 }
 
+
+// Builds and returns the hangman interface after each guess
 char* hangman_interface(Game *game){
 
 	int divider = 31;
@@ -172,46 +169,5 @@ char* hangman_interface(Game *game){
 	}	
 	return interface;
 
-	//printf("%s\n", interface);
-
 }
-
-/*
-
-Steps on server side (I think):
-
-		- Read the players guess
-		- call process_guess(game, letter)
-		- call check_completion(game)
-	- Check what game.completion_flag equals and display relevent message
-	- Update leaderboard
-	- Deallocate memory used by that game object ??
-	- Display main menu
-
-*/
-
-
-/********************************************************************************************************************/
-
-/*  Below is a main function and compile instruction to test parts of code without integrating it with the server   */
-
-/********************************************************************************************************************/
-/*
-int main(int argc, char *argv[]){
-	read_hangman_list();
-	Game game;
-	initialise_game(game);
-
-}*/
-
-//  Compile using:
-//  gcc -std=gnu99 -pthread src/game.c -I./headers -o bin/game
-//  ./bin/game
-
-
-
-
-
-
-
 

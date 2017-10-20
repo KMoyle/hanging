@@ -13,7 +13,8 @@ Leaderboard* leaderboard(){
 
 	return l;
 }
-//this function retrives the players score, used to update the scoreboard, multiple clients
+
+// this function retrives the players score, used to update the scoreboard, multiple clients
 player* get_users_score(char *clientname, Leaderboard *l){
 
 	player *players_score = l->first;

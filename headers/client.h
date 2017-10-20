@@ -18,7 +18,6 @@
 #include <string.h>
 
 #define BUFFER_LENGTH            256
-#define DISCONNECT_FLAG   "QUIT"
 
 static bool close_client = false;
 int error_indentifier;

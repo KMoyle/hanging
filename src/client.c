@@ -6,8 +6,8 @@ int main(int argc, char *argv[]){
 
 	socket_identifier = establish_connection(argv[1], argv[2]);
 
+	// Create threads for recieving and sending data
 	pthread_t recieve_thread, send_thread;
-
 	pthread_create(&send_thread, NULL, send_data, (void *) &socket_identifier);
 	pthread_create(&recieve_thread, NULL, recieve_data, (void *) &socket_identifier);
 	pthread_join(send_thread, NULL);
@@ -18,7 +18,7 @@ int main(int argc, char *argv[]){
 	close(EXIT_SUCCESS);
 }
 
-
+// Ensure arguments are correctly entered
 void check_inputs(int argc){
 	if (argc != 3) {
         	printf("Please enter: ./client <hostname> <port>\n");
@@ -26,7 +26,7 @@ void check_inputs(int argc){
 	}
 }
 
-
+// Establish connection to client using socket programming
 int establish_connection(char *host, char *portNum){
 
 
@@ -63,7 +63,7 @@ int establish_connection(char *host, char *portNum){
 
 }
 
-
+// Get input from user
 int obtain_input(char *msg, char *input_str)
 {
     int input_len;
@@ -85,7 +85,7 @@ int obtain_input(char *msg, char *input_str)
     return input_len;
 }
 
-
+// Send data to server
 static void *send_data(void *data)
 {
     int     *socket_identifier;
@@ -103,6 +103,7 @@ static void *send_data(void *data)
 
 }
 
+// Recieve data from server
 static void *recieve_data(void *data)
 {
     int     *socket_identifier;
