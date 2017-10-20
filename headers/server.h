@@ -18,7 +18,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include <netdb.h>     
-
+#include <signal.h>
 #include "game.h"
 #include "leaderboard.h"
 

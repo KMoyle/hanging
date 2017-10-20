@@ -9,7 +9,7 @@
 char buf_rec[BUFFER_SIZE];
 char buf_snd[BUFFER_SIZE];
 char buf[BUFFER_SIZE];
-bool server_running = true; 
+static volatile bool server_running = true; 
 Leaderboard *leaderboard_obj;
 char *port;
 char clientPassword[6];
@@ -270,10 +270,9 @@ int passive_connection(addrinfo *rp, char *port){
 }
 
 
-void close_server(){
-	close(pfd);
-	clientConnection = false;	
-	server_running = false;
+void close_server(int signal){
+	close(sfd);
+	exit(EXIT_SUCCESS);
 }
 
 	
@@ -314,15 +313,11 @@ int main(int argc, char *argv[])
 
 		printf("Sending Welcome Message\n\n");
 		
-		do{
+		while(clientConnection && server_running){	
 			client_(nfd, client);
+		}	
 		
-		}while(clientConnection && server_running);
-		
-		printf("Server closing\n");
-		close(nfd); 
-		exit(EXIT_SUCCESS);
-
+	
 	}
 
 }

@@ -8,24 +8,10 @@ int main(int argc, char *argv[]){
 
 	pthread_t recieve_thread, send_thread;
 
-
-	if (pthread_create(&send_thread, NULL, send_data, (void *) &socket_identifier) != 0) {
-        	close(EXIT_FAILURE);
-   	}
-
-	if (pthread_create(&recieve_thread, NULL, recieve_data, (void *) &socket_identifier) != 0) {
-        	close(EXIT_FAILURE);
-    	}
-
-   	if (pthread_join(send_thread, NULL) != 0) {
-        	close(EXIT_FAILURE);
-	}
-
-	if (pthread_join(recieve_thread, NULL) != 0) {
-        	close(EXIT_FAILURE);
-	}
-
-
+	pthread_create(&send_thread, NULL, send_data, (void *) &socket_identifier);
+	pthread_create(&recieve_thread, NULL, recieve_data, (void *) &socket_identifier);
+	pthread_join(send_thread, NULL);
+	pthread_join(recieve_thread, NULL);
 
 	close(socket_identifier);
 
@@ -91,7 +77,7 @@ int obtain_input(char *msg, char *input_str)
         *new_line = '\0';
     } else {
 
-        while (getchar() != '\n') { ; }
+        while (getchar() != '\n') {}
     }
 
     input_len = strlen(input_str) + 1;
@@ -110,14 +96,11 @@ static void *send_data(void *data)
 
     while (!close_client) {
         input_len = obtain_input("", send_buffer);
-
-        if (write(*socket_identifier, send_buffer, input_len) != input_len) {
-            perror("write");
-            exit(EXIT_FAILURE);
-        }
+	write(*socket_identifier, send_buffer, input_len); 
     }
 
     pthread_exit(NULL);
+
 }
 
 static void *recieve_data(void *data)
@@ -126,19 +109,13 @@ static void *recieve_data(void *data)
     char    recieved_buffer[BUFFER_LENGTH];
 
     socket_identifier = (int *) data;
-    while (1) {
-        if (read(*socket_identifier, recieved_buffer, BUFFER_LENGTH) == -1) {
-            exit(EXIT_FAILURE);
-        }
 
-        if (strcmp(recieved_buffer, DISCONNECT_FLAG) == 0) {
-            printf("\nServer has disconnected\n");
-            close_client = true;
-        }
-
-        printf("%s", recieved_buffer);
+    while (!close_client) {
+	read(*socket_identifier, recieved_buffer, BUFFER_LENGTH);
+	printf("%s", recieved_buffer);
         fflush(stdout);
     }
+
 }
 
 
