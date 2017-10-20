@@ -144,7 +144,7 @@ bool client_( int sfd, client_t* client ){
 		
 		if(win){
 			client->games_won++;
-			update_scores(leaderboard_obj, client->clientName, client->games_played, client->games_won);
+			//update_scores(leaderboard_obj, client->clientName, client->games_played, client->games_won);
 		}
 
 	}else if(menu_selection == 2){
@@ -214,7 +214,7 @@ void return_leaderboard(Leaderboard *l, client_t* client){
 
 	static char *leaderboard_interface[BUFFER_SIZE];
 
-	*leaderboard_interface = get_interface(l, client->clientName);
+	*leaderboard_interface = get_interface(l, client->clientName, client->games_played, client->games_won);
 
 	write_socket(client->sfd, *leaderboard_interface);
 }

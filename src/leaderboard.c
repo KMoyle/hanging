@@ -60,16 +60,17 @@ void update_scores(Leaderboard* l, char *clientname, int games_played, int games
 	// checks for a win, compare names and updates 
 	// compare names and update accordingly 
 	
-	player *p;
-
+	
 	if(games_played > 1){
-		p = get_users_score(clientname, l);
+		
+		//p = get_users_score(clientname, l);
 	}else{
-		p = add_to_leaderboard(clientname, l);
+
+		//p = add_to_leaderboard(clientname, l);
 	}
 
-	p->games_played = games_played;
-	p->games_won = games_won;
+	//p->games_played = games_played;
+	//p->games_won = games_won;
 
 }
 
@@ -82,18 +83,13 @@ void arrange_leaderboard(Leaderboard* l){
 
 }
 
-char* get_interface(Leaderboard* l, char *clientname){
+char* get_interface(Leaderboard* l, char *clientname, int games_played, int games_won){
 	
 	char leaderboard_container[BUFFER_SIZE];
 	char *leaderboard_interface = (char *) malloc(BUFFER_SIZE);
 	
-	player *current_player;
-
-	current_player = malloc(sizeof(player));
-
 	memset(leaderboard_container, 0, sizeof(leaderboard_container));
-	//while(1){}
-	//current_player = l->first;
+
 	
 	leaderboard_container[0] = '\n'; 
 	
@@ -107,7 +103,7 @@ char* get_interface(Leaderboard* l, char *clientname){
 	strcat(leaderboard_interface, leaderboard_container);
 	
 	
-	sprintf(leaderboard_container, "\n\nPlayer  - %s\nNumber of games won  - %d\nNumber of games played  - %d\n\0",current_player->name, current_player->games_won, current_player->games_played);
+	sprintf(leaderboard_container, "\n\nPlayer  - %s\nNumber of games won  - %d\nNumber of games played  - %d\n\0",clientname, games_won, games_played);
 	
 	strcat(leaderboard_interface, leaderboard_container);	
 
