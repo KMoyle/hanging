@@ -24,12 +24,9 @@ int error_indentifier;
 int socket_identifier;
 struct addrinfo hints;
 struct addrinfo *result, *rp;
-
 static void *send_data(void *socket_identifier);
-
 static void *recieve_data(void *data);
 int obtain_input(char *msg, char *input_str);
-
 void check_inputs(int argc);
 int establish_connection(char *host, char *portNum);
 void terminate_client();

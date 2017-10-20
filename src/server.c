@@ -20,13 +20,14 @@ int new_player;
 int pfd; //passive socket
 int sfd;
 
+// receives the client message
 void read_socket( int sfd, char *buf_rec ){
 	//Receives a message from sfd
         if (recv(sfd, buf_rec, BUF_SIZE, 0) == -1) {
             	perror("receiving input");
         }
 }
-
+// sends the server message
 void write_socket( int sfd, const char *buf_snd ){
 
 	if (send(sfd, buf_snd, BUF_SIZE, 0) == -1) {
@@ -56,10 +57,11 @@ bool authenticate_client(char *clientName, char *clientPassword){
 	}
 
 	fclose(fp);
+
 	return false; 
 
 }
-
+//given client structure, sends usernsmae message and recieves clients name
 void get_client_name(client_t* client){
 	
 	write_socket(client->sfd, USERNAME);
@@ -67,6 +69,7 @@ void get_client_name(client_t* client){
 	read_socket(client->sfd, client->clientName);
 
 }
+//given client structure, sends passwords message and recieves clients passwords
 void get_client_password(client_t* client){
 	
 	write_socket(client->sfd, PASSWORD);
@@ -74,7 +77,7 @@ void get_client_password(client_t* client){
 	read_socket(client->sfd, client->clientPassword);
 	
 }
-
+//given client structure, sends main menu and recieves clients menu selection
 int get_menu_selection( client_t* client ){
 	
 	char menu_selection[BUFFER_SIZE];
@@ -88,12 +91,10 @@ int get_menu_selection( client_t* client ){
 	return atoi(menu_selection);	
 	
 }
-
+//given client and game structure, recieves and processes clients slected char  
 char* get_guess( Game *game, client_t* client){
 
 	read_socket(client->sfd, game->guessed_character);
-
-	printf("Clients Guess: = %s\n", game->guessed_character);
 
 	//process guess and change guess count
 	process_guess(game, game->guessed_character);
@@ -123,6 +124,7 @@ void client_( int sfd, client_t* client ){
 		get_client_name(client);
 		get_client_password(client);
 
+		//input name and password in the authenticate client function, if unable to autherise send msg  
 		if(!authenticate_client(client->clientName, client->clientPassword)){
 		
 			printf("AUTH FAILED");
@@ -133,6 +135,7 @@ void client_( int sfd, client_t* client ){
 
 	}//end client info and authentication
 
+	//receive and process clients menu selection
 	int menu_selection = get_menu_selection(client);
 	printf("menu_selection %d\n",menu_selection);
 
@@ -158,6 +161,8 @@ void client_( int sfd, client_t* client ){
 	}	 
 	
 }
+
+//given client plays hangman and returns int '1' = win '0' = lose
 int play_hangman(client_t* client){
 
 	Game* game = malloc(sizeof(Game));
@@ -173,7 +178,7 @@ int play_hangman(client_t* client){
 	memset(hangman_container, 0, sizeof(hangman_container));
 	initialise_game(game);
 		
-	printf("Clients Words: %s %s\n\0", game->game_words.word_a, game->game_words.word_b);
+	printf("Clients Words: %s %s\n", game->game_words.word_a, game->game_words.word_b);
 
 	//Game loop
 	while(game->completion_flag == 0){
@@ -183,7 +188,7 @@ int play_hangman(client_t* client){
 		
 		//send HM interface
 		write_socket(client->sfd, *new_interface);
-		
+		//guessed character
 		letter = get_guess(game, client);
 		
 		produce_encoded_text(game);
@@ -217,7 +222,7 @@ void return_leaderboard(Leaderboard *l, client_t* client){
 	write_socket(client->sfd, *leaderboard_interface);
 }
 
-
+//secures passive connection and returns socket int
 int passive_connection(addrinfo *rp, char *port){
 	
 	int s;
@@ -269,13 +274,12 @@ int passive_connection(addrinfo *rp, char *port){
 	return sfd;
 }
 
-
+//trying to exit gracefully
 void close_server(int signal){
 	close(sfd);
 	exit(EXIT_SUCCESS);
 }
 
-	
 int main(int argc, char *argv[])
 {
 	int sfd, nfd;
@@ -292,12 +296,14 @@ int main(int argc, char *argv[])
 		printf("Incorrect port argument, assigned default %s\n\n",DEFAULT_PORT);
 	}
 
+	//client sfd
 	pfd = passive_connection(&rp, port);
 
 	printf("server is now listnening ...\n\n");
 
+	//read in hangman list
 	read_hangman_list();
-	
+	//trying to quit gracefully
 	signal(SIGINT, close_server);
 
 	while(server_running){  /* main accept() loop */

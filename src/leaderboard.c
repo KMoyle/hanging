@@ -14,7 +14,7 @@ Leaderboard* leaderboard(){
 	return l;
 }
 
-// This function retrives the players score, used to update the scoreboard, multiple clients
+// This function retrives the players score, used to update the scoreboard
 player* get_users_score(char *clientname, Leaderboard *l){
 
 	player *players_score = l->first;
@@ -29,7 +29,7 @@ player* get_users_score(char *clientname, Leaderboard *l){
 
 }
 
-//add you player to leaderboard, multiple clients
+//add new player to leaderboard, receives the clientname and Leaderboard, return new_player
 player* add_to_leaderboard(char *clientname, Leaderboard *l){
 	
 	//have an instance of player and add them to the leaderboard  
@@ -57,14 +57,7 @@ player* add_to_leaderboard(char *clientname, Leaderboard *l){
 	return new_player;
 }
 
-
-//arrange the players due to scores
-void arrange_leaderboard(Leaderboard* l){
-
-	//logic to sort leaderboard
-
-}
-
+// receives the clients user details concatenates and returns the leader_interface for Hangman
 char* get_interface(Leaderboard* l, char *clientname, int games_played, int games_won){
 	
 	char leaderboard_container[BUFFER_SIZE];
