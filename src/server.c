@@ -270,11 +270,10 @@ int passive_connection(addrinfo *rp, char *port){
 }
 
 
-void sigintHandler(int sig_num) {
-	// Exit Gracefully
-	server_running = false;
+void close_server(){
 	close(pfd);
-	exit(EXIT_SUCCESS);
+	clientConnection = false;	
+	server_running = false;
 }
 
 	
@@ -285,8 +284,6 @@ int main(int argc, char *argv[])
 	client_t* client = malloc(sizeof(client_t));
 	client->games_played = 0;
 	client->games_won = 0;
-
-	signal(SIGINT, sigintHandler);
 
 	// Get port number for server to listen on, if not correct defalut is assigned
 	if (argc == 2) {
@@ -301,6 +298,8 @@ int main(int argc, char *argv[])
 	printf("server is now listnening ...\n\n");
 
 	read_hangman_list();
+	
+	signal(SIGINT, close_server);
 
 	while(server_running){  /* main accept() loop */
 		
@@ -320,8 +319,9 @@ int main(int argc, char *argv[])
 		
 		}while(clientConnection && server_running);
 		
-		
+		printf("Server closing\n");
 		close(nfd); 
+		exit(EXIT_SUCCESS);
 
 	}
 
